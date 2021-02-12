@@ -25,25 +25,19 @@ k_points = mp.interpolate(10, k_points)
 # print k_points
 
 dielectric_constant = 12
+geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
 
-radii = (0.1, 0.2, 0.3, 0.4, 0.5)
-cylinders = list()
-
-for r in radii:
-    cylinders.append([mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))])
-
-
-# Square Lattice
-geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
-
 resolution = 32 # Lattice constant is this many pixels
 
-for c in cylinders:
+radii = (0.1, 0.2, 0.3, 0.4, 0.5)
+
+for r in radii:
+
     ms = mpb.ModeSolver(num_bands=num_bands,
                         k_points=k_points,
-                        geometry=c,
+                        geometry=[mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))],
                         geometry_lattice=geometry_lattice,
                         resolution=resolution)
 
@@ -61,6 +55,7 @@ for c in cylinders:
     md = mpb.MPBData(rectify=True, periods=3, resolution=resolution)
     eps = md.convert(ms.get_epsilon())
     plt.imshow(eps, interpolation='spline36', cmap='binary')
+    plt.title("Radius = "+str(r)+"a")
     plt.show()
 
     # Plot both tm and te bands
