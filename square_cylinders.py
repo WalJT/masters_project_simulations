@@ -92,5 +92,5 @@ for r in radii:
     ax.set_xticklabels(tick_labs, size=16)
     ax.set_ylabel('frequency (c/a)', size=16)
     ax.grid(True)
-
+    plt.title("Radius = "+str(r)+"a")
     plt.show()
