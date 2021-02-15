@@ -93,3 +93,10 @@ for r in radii:
     ax.grid(True)
     plt.title("Radius = "+str(r)+"a")
     plt.show()
+
+    with open("gap_list.out", "a") as gaps_output:
+        gaps_output.write("TM Band Gaps for radius "+str(r)+"a:\n")
+        gaps_output.write(str(tm_gaps))
+        gaps_output.write("\nTE Band Gaps for radius "+str(r)+"a:\n")
+        gaps_output.write(str(te_gaps))
+        gaps_output.write("\n=======================================\n\n")
