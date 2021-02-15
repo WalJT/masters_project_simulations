@@ -21,7 +21,7 @@ k_points = [mp.Vector3(),          # Gamma
             mp.Vector3()]          # Gamma
 # print k_points
 # Add points inbetween the above points on the BZ
-k_points = mp.interpolate(10, k_points)
+k_points = mp.interpolate(100, k_points)
 # print k_points
 
 dielectric_constant = 12
@@ -29,7 +29,7 @@ geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
 
-resolution = 32 # Lattice constant is this many pixels
+resolution = 100     # Lattice constant is this many pixels
 
 radii = (0.1, 0.2, 0.3, 0.4, 0.5)
 
@@ -57,7 +57,6 @@ for r in radii:
     plt.imshow(eps, interpolation='spline36', cmap='binary')
     plt.title("Radius = "+str(r)+"a")
     plt.show()
-
     # Plot both tm and te bands
 
     fig, ax = plt.subplots()
