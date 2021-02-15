@@ -24,7 +24,7 @@ k_points = [mp.Vector3(),          # Gamma
 k_points = mp.interpolate(100, k_points)
 # print k_points
 
-dielectric_constant = 12
+dielectric_constant = 1 # of the rods
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
@@ -39,6 +39,7 @@ for r in radii:
                         k_points=k_points,
                         geometry=[mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))],
                         geometry_lattice=geometry_lattice,
+                        default_material=mp.Medium(epsilon=12), # Silicon-like material to contain air rods
                         resolution=resolution)
 
 
