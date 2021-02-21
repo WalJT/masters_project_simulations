@@ -21,17 +21,17 @@ k_points = [mp.Vector3(),          # Gamma
             mp.Vector3()]          # Gamma
 # print k_points
 # Add points inbetween the above points on the BZ
-k_points = mp.interpolate(100, k_points)
+k_points = mp.interpolate(42, k_points)
 # print k_points
 
-dielectric_constant = 1 # of the rods
+dielectric_constant = 3.61 # of the rods
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
 
-resolution = 100     # Lattice constant is this many pixels
+resolution = 42     # Lattice constant is this many pixels
 
-radii = (0.1, 0.2, 0.3, 0.4, 0.5)
+radii = (0.1, 0.2, 0.3, 0.4, 0.5) # Radii as a in units of a
 
 for r in radii:
 
@@ -39,7 +39,7 @@ for r in radii:
                         k_points=k_points,
                         geometry=[mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))],
                         geometry_lattice=geometry_lattice,
-                        default_material=mp.Medium(epsilon=12), # Silicon-like material to contain air rods
+                        # default_material=mp.Medium(epsilon=12), # Silicon-like material to contain air rods
                         resolution=resolution)
 
 
