@@ -2,9 +2,7 @@
 
 """
 A two dimensional square lattice of inifinitly long
-cylindrical rods of crystalline silicon.
-(https://github.com/NanoComp/meep/blob/master/python/materials.py)
-Created following the MPB tutorial at
+cylindrical rods. Created following the MPB tutorial at
 https://mpb.readthedocs.io/en/latest/Python_Tutorial/
 """
 
@@ -12,8 +10,6 @@ import math
 import meep as mp
 from meep import mpb
 import numpy as np
-
-from meep.materials import cSi
 
 import matplotlib.pyplot as plt
 
@@ -25,15 +21,15 @@ k_points = [mp.Vector3(),          # Gamma
             mp.Vector3()]          # Gamma
 # print k_points
 # Add points inbetween the above points on the BZ
-k_points = mp.interpolate(20, k_points)
+k_points = mp.interpolate(42, k_points)
 # print k_points
 
-# dielectric_constant = 3.61 # of the rods
+dielectric_constant = 3.61 # of the rods
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
 
-resolution = 42     # Lattice constant is this many pixels
+resolution = 100     # Lattice constant is this many pixels
 
 radii = (0.1, 0.2, 0.3, 0.4, 0.5) # Radii as a in units of a
 
@@ -41,7 +37,7 @@ for r in radii:
 
     ms = mpb.ModeSolver(num_bands=num_bands,
                         k_points=k_points,
-                        geometry=[mp.Cylinder(r, material=cSi)],
+                        geometry=[mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))],
                         geometry_lattice=geometry_lattice,
                         # default_material=mp.Medium(epsilon=12), # Silicon-like material to contain air rods
                         resolution=resolution)
