@@ -13,7 +13,7 @@ import meep as mp
 from meep import mpb
 import numpy as np
 
-from meep.materials import cSi
+from meep.materials import cSi # Crytsalline Silicon
 
 import matplotlib.pyplot as plt
 
