@@ -4,10 +4,10 @@ cylindrical rods. Created following the MPB tutorial at
 https://mpb.readthedocs.io/en/latest/Python_Tutorial/
 """
 
-import math
+# import math
 import meep as mp
 from meep import mpb
-import numpy as np
+# import numpy as np
 
 import matplotlib.pyplot as plt
 
