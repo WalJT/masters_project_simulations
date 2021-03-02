@@ -13,8 +13,8 @@ import meep as mp
 from meep import mpb
 import numpy as np
 
-from meep.materials import cSi # Crytsalline Silicon
-# from meep.materials import aSi # Amporphous Silicon
+from meep.materials import cSi # Crystalline Silicon
+# from meep.materials import aSi # Amorphous Silicon
 
 import matplotlib.pyplot as plt
 
