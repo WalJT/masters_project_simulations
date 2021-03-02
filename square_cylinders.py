@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 A two dimensional square lattice of inifinitly long
 cylindrical rods. Created following the MPB tutorial at
