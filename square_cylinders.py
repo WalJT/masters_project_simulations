@@ -14,6 +14,7 @@ from meep import mpb
 import numpy as np
 
 from meep.materials import cSi # Crytsalline Silicon
+# from meep.materials import aSi # Amporphous Silicon
 
 import matplotlib.pyplot as plt
 
@@ -33,7 +34,7 @@ geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
 
-resolution = 42     # Lattice constant is this many pixels
+resolution = 100     # Lattice constant is this many pixels
 
 radii = (0.1, 0.2, 0.3, 0.4, 0.5) # Radii as a in units of a
 
