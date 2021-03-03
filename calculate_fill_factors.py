@@ -36,6 +36,7 @@ def square_circs(r: [int, float], a: [int, float]) -> float:
 
     if (r > a/2):
         print("The packing fraction is greater than close packed")
+        return None
         # TODO: handle this case
 
     square_area = a ** 2
@@ -46,4 +47,10 @@ def square_circs(r: [int, float], a: [int, float]) -> float:
 
 
 if __name__ == "__main__":
-    print(square_circs(0.5, 1))
+    radii = np.linspace(0, 1, int(1e4))
+    fill_facts = list()
+    for r in radii:
+        fill_facts.append(square_circs(r, 1))
+
+    plt.plot(radii, fill_facts)
+    plt.show()
