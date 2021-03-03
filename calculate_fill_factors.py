@@ -21,7 +21,16 @@ def square_circs():
 
     :return:
     """
-    R = np.linspace(0, 0.5, num=1e4)
+    radii = np.linspace(0, 1e4, 0.5)
+
+    i = 0
+    areas = np.array()
+    for r in radii:
+        areas[i] = area_circle(r)
+        i += 1
+
+    plt.plot(radii, areas)
+    plt.show()
 
 
 square_circs()
