@@ -34,7 +34,7 @@ def square_circs(r: [int, float], a: [int, float]) -> float:
     :return: Packing fraction (complete fill is 1)
     """
 
-    if (r > a/2):
+    if r > a/2:
         print("The packing fraction is greater than close packed")
         return None
         # TODO: handle this case
