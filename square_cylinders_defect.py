@@ -13,7 +13,7 @@ from meep import mpb
 
 import matplotlib.pyplot as plt
 
-num_bands = 50
+num_bands = 70
 
 k_points = [mp.Vector3(),  # Gamma
             mp.Vector3(0.5),  # X
