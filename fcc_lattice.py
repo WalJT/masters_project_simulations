@@ -4,16 +4,15 @@ Brillouin Zone is close to spherical, and thus interactions
 at similar wavelengths can be expected in all directions
 """
 
-from math import sqrt
+import numpy as np
 import meep as mp
 from meep import mpb
 
 import matplotlib.pyplot as plt
 
 # Define the square root of 1/2:
-sqrt_half = sqrt(1 / 2)
+sqrt_half = np.sqrt(1 / 2)
 
-sqrt_half = math.sqrt(0.5)
 geometry_lattice = mp.Lattice(
     basis_size=mp.Vector3(sqrt_half, sqrt_half, sqrt_half),
     basis1=mp.Vector3(0, 1, 1),
