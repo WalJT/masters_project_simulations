@@ -21,14 +21,14 @@ k_points = [mp.Vector3(),  # Gamma
             mp.Vector3()]  # Gamma
 # print k_points
 # Add points inbetween the above points on the BZ
-k_points = mp.interpolate(42, k_points)
+k_points = mp.interpolate(15, k_points)
 # print k_points
 
 dielectric_constant = 3.61  # of the rods
 
 # Create an array of cylinders with different radii
 
-resolution = 100  # Lattice constant is this many pixels
+resolution = 16  # Lattice constant is this many pixels
 
 radii = (0.1, 0.2, 0.3, 0.38, 0.4, 0.5)  # Radii as a in units of a
 
