@@ -13,7 +13,7 @@ from meep import mpb
 
 import matplotlib.pyplot as plt
 
-num_bands = 8
+num_bands = 50
 
 k_points = [mp.Vector3(),  # Gamma
             mp.Vector3(0.5),  # X
@@ -24,13 +24,13 @@ k_points = [mp.Vector3(),  # Gamma
 k_points = mp.interpolate(15, k_points)
 # print k_points
 
-dielectric_constant = 3.61  # of the rods
+dielectric_constant = 12  # of the rods
 
 # Create an array of cylinders with different radii
 
 resolution = 16  # Lattice constant is this many pixels
 
-radii = (0.1, 0.2, 0.3, 0.38, 0.4, 0.5)  # Radii as a in units of a
+radii = (0.38, 0.4, 0.1, 0.2, 0.3, 0.5)  # Radii as a in units of a
 
 for r in radii:
 
@@ -41,9 +41,9 @@ for r in radii:
 
     # Set up the lattice with a pont defect
     ms.geometry_lattice = mp.Lattice(size=mp.Vector3(5, 5))
-    ms.geometry = [mp.Cylinder(0.2, material=mp.Medium(epsilon=dielectric_constant))]
+    ms.geometry = [mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))]
     ms.geometry = mp.geometric_objects_lattice_duplicates(ms.geometry_lattice, ms.geometry)
-    ms.geometry.append(mp.Cylinder(0.2, material=mp.air))
+    ms.geometry.append(mp.Cylinder(r, material=mp.air))
 
     print("Square lattice of rods: TM bands")
     ms.run_tm()
