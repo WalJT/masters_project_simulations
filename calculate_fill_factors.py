@@ -53,4 +53,7 @@ if __name__ == "__main__":
         fill_facts.append(square_circs(r, 1))
 
     plt.plot(radii, fill_facts)
+    plt.xlabel("Radius (a)")
+    plt.ylabel("fill factor")
+    plt.grid()
     plt.show()

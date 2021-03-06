@@ -13,10 +13,14 @@ frequency_c_over_a = float(input("Enter frequency in c/a: "))
 frequency_hertz = frequency_c_over_a * (speed_of_light / (lattice_constant * 1e-6))
 wavelength_meters = speed_of_light / frequency_hertz
 
-print("The frequency in hertz is: " + str(frequency_hertz))
+scientific_notation = "{:e}".format(frequency_hertz)
+
+print("The frequency in hertz is: " + str(scientific_notation))
 print("The wavelength in meters is: "+str(wavelength_meters))
 
 energy_joules = planck_constant*frequency_hertz
 energy_electron_volts = energy_joules/electron_charge
+
+print("The energy is: "+str(energy_joules)+"J")
 
 print("The energy is: "+str(energy_electron_volts)+"eV")

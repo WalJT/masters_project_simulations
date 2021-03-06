@@ -2,6 +2,8 @@
 A two dimensional square lattice of infinitely long
 cylindrical rods. Created following the MPB tutorial at
 https://mpb.readthedocs.io/en/latest/Python_Tutorial/
+
+modified to contain a point defect
 """
 
 # import math
@@ -23,7 +25,6 @@ k_points = mp.interpolate(42, k_points)
 # print k_points
 
 dielectric_constant = 3.61  # of the rods
-geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 
 # Create an array of cylinders with different radii
 
@@ -35,10 +36,14 @@ for r in radii:
 
     ms = mpb.ModeSolver(num_bands=num_bands,
                         k_points=k_points,
-                        geometry=[mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))],
-                        geometry_lattice=geometry_lattice,
                         # default_material=mp.Medium(epsilon=12), # Silicon-like material to contain air rods
                         resolution=resolution)
+
+    # Set up the lattice with a pont defect
+    ms.geometry_lattice = mp.Lattice(size=mp.Vector3(5, 5))
+    ms.geometry = [mp.Cylinder(0.2, material=mp.Medium(epsilon=dielectric_constant))]
+    ms.geometry = mp.geometric_objects_lattice_duplicates(ms.geometry_lattice, ms.geometry)
+    ms.geometry.append(mp.Cylinder(0.2, material=mp.air))
 
     print("Square lattice of rods: TM bands")
     ms.run_tm()
