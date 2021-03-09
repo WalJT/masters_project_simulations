@@ -34,7 +34,7 @@ vlist = [
 
 # Define important parameters
 k_points = mp.interpolate(15, vlist)
-atom_material = mp.Medium(index=1.6)  # These spheres are embedded
+atom_material = mp.Medium(epsilon=12)  # These spheres are embedded
 bulk_material = mp.Medium(epsilon=1)  # in this substrate
 radius = 0.3
 geometry = [mp.Sphere(radius, material=atom_material)]  # Sphere in the center of the unit cell
