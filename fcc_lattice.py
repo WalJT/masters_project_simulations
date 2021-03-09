@@ -32,21 +32,14 @@ vlist = [
     mp.Vector3(0.375, 0.75, 0.375)  # K
 ]
 
+# Define important parameters
 k_points = mp.interpolate(15, vlist)
-
-# Define two dielectric materials, one for the background medium
-# and one for the structure.
-bulk_material = mp.Medium(epsilon=1)
-atom_material = mp.Medium(epsilon=12)
-
-# Place a sphere of dielectric material in the center of the unit cell
-radius = 0.3  # relative to the lattice constant
-geometry = [mp.Sphere(radius, material=atom_material)]
-
-resolution = 16  # This will make the unit cell a 42x42x42 grid
-# Reduce this number to increase computation speed
-
-num_bands = 20
+atom_material = mp.Medium(epsilon=12)  # These spheres are embedded
+bulk_material = mp.Medium(epsilon=1)  # in this substrate
+radius = 0.3
+geometry = [mp.Sphere(radius, material=atom_material)]  # Sphere in the center of the unit cell
+resolution = 16  # Reduce this number to increase computation speed
+num_bands = 20  # The number of bands to plot
 
 ms = mpb.ModeSolver(num_bands=num_bands,
                     k_points=k_points,
