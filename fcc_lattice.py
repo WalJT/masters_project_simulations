@@ -3,10 +3,11 @@ The 3D Face Centered Cubic lattice is commonly used, as its
 Brillouin Zone is close to spherical, and thus interactions
 at similar wavelengths can be expected in all directions
 """
+from typing import List
 
 import numpy as np
 import meep as mp
-from meep import mpb
+from meep import mpb, Vector3
 import matplotlib.pyplot as plt
 
 # Define the square root of 1/2:
@@ -31,28 +32,30 @@ vlist = [
     mp.Vector3(0.375, 0.75, 0.375)  # K
 ]
 
-k_points = mp.interpolate(10, vlist)
+k_points = mp.interpolate(15, vlist)
 
 # Define two dielectric materials, one for the background medium
 # and one for the structure.
-bulk_material = mp.Medium(epsilon=1) # air
-atom_material = mp.Medium(epsilon=12) # A silicon-like material
+bulk_material = mp.Medium(epsilon=1)
+atom_material = mp.Medium(epsilon=12)
 
 # Place a sphere of dielectric material in the center of the unit cell
-radius = 0.35 #relative to the lattice constant
+radius = 0.3  # relative to the lattice constant
 geometry = [mp.Sphere(radius, material=atom_material)]
 
-resolution = 20 # This will make the unit cell a 42x42x42 grid
+resolution = 16  # This will make the unit cell a 42x42x42 grid
 # Reduce this number to increase computation speed
 
-num_bands = 6
+num_bands = 20
 
 ms = mpb.ModeSolver(num_bands=num_bands,
-    k_points=k_points,
-    geometry=geometry,
-    geometry_lattice=geometry_lattice,
-    resolution=resolution,
+                    k_points=k_points,
+                    geometry=geometry,
+                    geometry_lattice=geometry_lattice,
+                    resolution=resolution,
+                    mesh_size=5
 )
+
 
 def plot_bands(freqs):
     """
@@ -72,14 +75,29 @@ def plot_bands(freqs):
     plt.show()
 
 
+def extract_epsilon():
+    """
+    Extracts dielectric function from global mode solver obj
+    """
+    eps = ms.get_epsilon()
+    md = mpb.MPBData(rectify=True, periods=12, resolution=resolution)
+    eps = md.convert(eps)
+    for i in range(resolution):
+        plt.imshow(eps[i], interpolation='spline36', cmap='binary')  # Plot a slice
+        plt.show()
+
+
 def do_calculations():
     """
     Run using global mode solver settings
     """
     ms.run()
     freqs = ms.all_freqs
-    # print(freqs)
-    plot_bands(freqs)
+    return freqs
+
 
 if __name__ == "__main__":
-    do_calculations()
+    freqs = do_calculations()
+    plot_bands(freqs)
+    # ms.init_params()
+    # extract_epsilon()
