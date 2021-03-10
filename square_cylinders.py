@@ -20,8 +20,8 @@ k_points = [mp.Vector3(),  # Gamma
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 num_bands = 8
 k_points = mp.interpolate(20, k_points)
-rods_material = mp.Medium(epsilon=12)
-bulk_material = mp.Medium(epsilon=1)
+rods_material = mp.Medium(epsilon=1)
+bulk_material = mp.Medium(epsilon=3.6)
 resolution = 50  # Lattice constant is this many pixels
 radius = 0.2  # radius of the cylinders
 geometry = [mp.Cylinder(radius, material=rods_material)]
@@ -81,8 +81,9 @@ def plot_bands(bands):
 
 
 if __name__ == "__main__":
-    frequencies = do_calculations("tm")
+    frequencies = do_calculations("te")
     plot_bands(frequencies)
+    display_lattice()
 
 """
 for r in radii:
