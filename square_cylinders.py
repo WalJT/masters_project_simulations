@@ -7,38 +7,62 @@ https://mpb.readthedocs.io/en/latest/Python_Tutorial/
 # import math
 import meep as mp
 from meep import mpb
-# import numpy as np
-
+import numpy as np
 import matplotlib.pyplot as plt
 
-num_bands = 8
-
+# Define points on the irreducible BZ
 k_points = [mp.Vector3(),  # Gamma
             mp.Vector3(0.5),  # X
             mp.Vector3(0.5, 0.5),  # M
             mp.Vector3()]  # Gamma
-# print k_points
-# Add points inbetween the above points on the BZ
-k_points = mp.interpolate(42, k_points)
-# print k_points
 
-dielectric_constant = 12  # of the rods
+# Important parameters to be passed to the mode solver
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
-
-# Create an array of cylinders with different radii
-
+num_bands = 8
+k_points = mp.interpolate(42, k_points)
+rods_material = mp.Medium(epsilon=12)
+bulk_material = mp.Medium(epsilon=1)
 resolution = 100  # Lattice constant is this many pixels
+radius = 0.2  # radius of the cylinders
+geometry = [mp.Cylinder(radius, material=rods_material)]
 
-radii = (0.1, 0.2, 0.3, 0.38, 0.4, 0.5)  # Radii as a in units of a
+# Create the ModeSolver
+ms = mpb.ModeSolver(num_bands=num_bands,
+                    k_points=k_points,
+                    geometry=geometry,
+                    geometry_lattice=geometry_lattice,
+                    default_material=bulk_material,
+                    resolution=resolution)
+
+
+def do_calculations(polarization: str):
+    """
+    Run MPB using the global modesolver
+    :param polarization: tm or te
+    :return: bands (array), polarization
+    """
+    if polarization == "tm":
+        print("Running for Transverse Magnetic Polarisation:")
+        ms.run_tm()
+    elif polarization == "te":
+        print("Running for Transverse Electric Polarisation:")
+        ms.run_te()
+    else:
+        print("Unrecognised Polarisation")
+        return None
+
+    return ms.all_freqs, polarization
+
+
+def display_lattice():
+    pass  # TODO
+
+
+def plot_bands(bands: ms.all_freqs):
+    pass  # TODO
+
 
 for r in radii:
-
-    ms = mpb.ModeSolver(num_bands=num_bands,
-                        k_points=k_points,
-                        geometry=[mp.Cylinder(r, material=mp.Medium(epsilon=dielectric_constant))],
-                        geometry_lattice=geometry_lattice,
-                        # default_material=mp.Medium(epsilon=12), # Silicon-like material to contain air rods
-                        resolution=resolution)
 
     print("Square lattice of rods: TM bands")
     ms.run_tm()
