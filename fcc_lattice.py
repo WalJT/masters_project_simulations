@@ -85,8 +85,8 @@ def do_calculations():
     Run using global mode solver settings
     """
     ms.run()
-    freqs = ms.all_freqs
-    return freqs
+    frequencies = ms.all_freqs
+    return frequencies
 
 
 def output_bandgaps():
@@ -94,7 +94,7 @@ def output_bandgaps():
 
 
 if __name__ == "__main__":
-    freqs = do_calculations()
-    plot_bands(freqs)
+    frequencies = do_calculations()
+    plot_bands(frequencies)
     # ms.init_params()
     # extract_epsilon()

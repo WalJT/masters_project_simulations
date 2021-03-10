@@ -19,10 +19,10 @@ k_points = [mp.Vector3(),  # Gamma
 # Important parameters to be passed to the mode solver
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 num_bands = 8
-k_points = mp.interpolate(42, k_points)
+k_points = mp.interpolate(20, k_points)
 rods_material = mp.Medium(epsilon=12)
 bulk_material = mp.Medium(epsilon=1)
-resolution = 100  # Lattice constant is this many pixels
+resolution = 50  # Lattice constant is this many pixels
 radius = 0.2  # radius of the cylinders
 geometry = [mp.Cylinder(radius, material=rods_material)]
 
@@ -39,7 +39,7 @@ def do_calculations(polarization: str):
     """
     Run MPB using the global modesolver
     :param polarization: tm or te
-    :return: bands (array), polarization
+    :return: bands (array)
     """
     if polarization == "tm":
         print("Running for Transverse Magnetic Polarisation:")
@@ -51,34 +51,41 @@ def do_calculations(polarization: str):
         print("Unrecognised Polarisation")
         return None
 
-    return ms.all_freqs, polarization
+    return ms.all_freqs
 
 
 def display_lattice():
-    pass  # TODO
-
-
-def plot_bands(bands: ms.all_freqs):
-    pass  # TODO
-
-
-for r in radii:
-
-    print("Square lattice of rods: TM bands")
-    ms.run_tm()
-    tm_freqs = ms.all_freqs
-    tm_gaps = ms.gap_list
-
-    print("Square lattice of rods: TE bands")
-    ms.run_te()
-    te_freqs = ms.all_freqs
-    te_gaps = ms.gap_list
-
-    md = mpb.MPBData(rectify=True, periods=3, resolution=resolution)
+    md = mpb.MPBData(periods=3, resolution=resolution, rectify=True)
     eps = md.convert(ms.get_epsilon())
-    plt.imshow(eps, interpolation='spline36', cmap='binary')
-    plt.title("Radius = " + str(r) + "a")
+    plt.imshow(eps)
     plt.show()
+
+
+def plot_bands(bands):
+    x = range(len(bands))
+
+    # Scatter plot for multiple y values, see https://stackoverflow.com/a/34280815/2261298
+    # Used to plot frequencies in all bands at each k-point
+    for xz, bandz in zip(x, bands):
+        plt.scatter([xz] * len(bandz), bandz, color="blue")
+
+    plt.plot(bands, color="blue")  # Plot lines, so we have a continuous representation
+
+    # Label axes:
+    plt.ylabel("Frequency, c/a")
+    points_in_between = (len(bands) - 4) / 3  # Number of points in between BZ corners
+    tick_locations = [i * points_in_between + i for i in range(4)]
+
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    frequencies = do_calculations("tm")
+    plot_bands(frequencies)
+
+"""
+for r in radii:
     # Plot both tm and te bands
 
     fig, ax = plt.subplots()
@@ -122,3 +129,4 @@ for r in radii:
         gaps_output.write("\nTE Band Gaps for radius " + str(r) + "a:\n")
         gaps_output.write(str(te_gaps))
         gaps_output.write("\n=======================================\n\n")
+"""
