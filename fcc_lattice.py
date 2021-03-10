@@ -47,7 +47,7 @@ ms = mpb.ModeSolver(num_bands=num_bands,
                     geometry_lattice=geometry_lattice,
                     resolution=resolution,
                     mesh_size=5
-)
+                    )
 
 
 def plot_bands(freqs):
@@ -87,6 +87,10 @@ def do_calculations():
     ms.run()
     freqs = ms.all_freqs
     return freqs
+
+
+def output_bandgaps():
+    pass  # TODO
 
 
 if __name__ == "__main__":
