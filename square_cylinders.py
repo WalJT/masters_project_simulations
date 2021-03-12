@@ -20,8 +20,8 @@ k_points = [mp.Vector3(),  # Gamma
 geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
 num_bands = 8
 k_points = mp.interpolate(20, k_points)
-rods_material = mp.Medium(epsilon=1)
-bulk_material = mp.Medium(epsilon=3.6)
+rods_material = mp.Medium(epsilon=12)
+bulk_material = mp.Medium(epsilon=1)
 resolution = 50  # Lattice constant is this many pixels
 radius = 0.2  # radius of the cylinders
 geometry = [mp.Cylinder(radius, material=rods_material)]
@@ -51,56 +51,55 @@ def do_calculations(polarization: str):
         print("Unrecognised Polarisation")
         return None
 
-    return ms.all_freqs
+    return ms.all_freqs, ms.gap_list
 
 
 def display_lattice():
     md = mpb.MPBData(periods=3, resolution=resolution, rectify=True)
     eps = md.convert(ms.get_epsilon())
-    plt.imshow(eps)
+    plt.imshow(eps, interpolation='spline36', cmap='binary')
     plt.show()
 
 
-def plot_bands(bands):
+def plot_bands(bands, gaps):
+    fig, ax = plt.subplots()  # We need ax in order to modify the tick labels
+
     x = range(len(bands))
 
     # Scatter plot for multiple y values, see https://stackoverflow.com/a/34280815/2261298
     # Used to plot frequencies in all bands at each k-point
     for xz, bandz in zip(x, bands):
-        plt.scatter([xz] * len(bandz), bandz, color="blue")
+        ax.scatter([xz] * len(bandz), bandz, color="blue")
 
-    plt.plot(bands, color="blue")  # Plot lines, so we have a continuous representation
+    ax.plot(bands, color="blue")  # Plot lines, so we have a continuous representation
 
     # Label axes:
     plt.ylabel("Frequency, c/a")
     points_in_between = (len(bands) - 4) / 3  # Number of points in between BZ corners
     tick_locations = [i * points_in_between + i for i in range(4)]
+    ax.set_xticks(tick_locations)
 
+    tick_labels = ["Gamma", "X", "M", "Gamma"]
+    ax.set_xticklabels(tick_labels)
+
+    # Plot any complete band gaps that were found
+    for gap in gaps:
+        if gap[0] > 1:
+            ax.fill_between(x, gap[1], gap[2], color="blue", alpha=0.1)
 
     plt.show()
 
 
+def output_gap_list(gaps):
+    pass  # TODO
+
+
 if __name__ == "__main__":
-    frequencies = do_calculations("te")
-    plot_bands(frequencies)
+    band_frequencies, band_gaps = do_calculations("tm")
+    plot_bands(band_frequencies, band_gaps)
     display_lattice()
 
 """
-for r in radii:
-    # Plot both tm and te bands
-
-    fig, ax = plt.subplots()
-    x = range(len(tm_freqs))
-    # Plot bands
-    # Scatter plot for multiple y values, see https://stackoverflow.com/a/34280815/2261298
-    for xz, tmz, tez in zip(x, tm_freqs, te_freqs):
-        ax.scatter([xz] * len(tmz), tmz, color='blue')
-        # ax.scatter([xz] * len(tez), tez, color='red', facecolors='none')
-    ax.plot(tm_freqs, color='blue')
-    # ax.plot(te_freqs, color='red')
-    ax.set_ylim([0, 1])
-    ax.set_xlim([x[0], x[-1]])
-
     # Plot gaps
     for gap in tm_gaps:
         if gap[0] > 1:
@@ -110,19 +109,6 @@ for r in radii:
         if gap[0] > 1:
             ax.fill_between(x, gap[1], gap[2], color='red', alpha=0.2)
 
-    # Plot labels
-    ax.text(12, 0.04, 'TM bands', color='blue', size=15)
-    # ax.text(13.05, 0.235, 'TE bands', color='red', size=15)
-
-    points_in_between = (len(tm_freqs) - 4) / 3
-    tick_locs = [i * points_in_between + i for i in range(4)]
-    tick_labs = ['$\Gamma$', 'X', 'M', '$\Gamma$']
-    ax.set_xticks(tick_locs)
-    ax.set_xticklabels(tick_labs, size=16)
-    ax.set_ylabel('frequency (c/a)', size=16)
-    ax.grid(True)
-    plt.title("Radius = " + str(r) + "a")
-    plt.show()
 
     with open("gap_list.out", "a") as gaps_output:
         gaps_output.write("TM Band Gaps for radius " + str(r) + "a:\n")
