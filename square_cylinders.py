@@ -57,6 +57,7 @@ def do_calculations(polarization: str):
 def display_lattice():
     md = mpb.MPBData(periods=3, resolution=resolution, rectify=True)
     eps = md.convert(ms.get_epsilon())
+    # Show low dielectric constant as white, and high as black
     plt.imshow(eps, interpolation='spline36', cmap='binary')
     plt.show()
 
