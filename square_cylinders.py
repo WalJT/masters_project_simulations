@@ -101,16 +101,6 @@ if __name__ == "__main__":
     display_lattice()
 
 """
-    # Plot gaps
-    for gap in tm_gaps:
-        if gap[0] > 1:
-            ax.fill_between(x, gap[1], gap[2], color='blue', alpha=0.2)
-
-    for gap in te_gaps:
-        if gap[0] > 1:
-            ax.fill_between(x, gap[1], gap[2], color='red', alpha=0.2)
-
-
     with open("gap_list.out", "a") as gaps_output:
         gaps_output.write("TM Band Gaps for radius " + str(r) + "a:\n")
         gaps_output.write(str(tm_gaps))
