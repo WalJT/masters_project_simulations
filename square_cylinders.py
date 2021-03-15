@@ -73,8 +73,16 @@ def set_up_crystal():
     Returns geometry_lattice; A Lattice object with specified lattice vectors, and
     geometry; objects that make up the basis of the crystal
     """
-    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
+    # These are for a simple square lattice
+    # geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
+    # geometry = [mp.Cylinder(radius, material=rods_material)]
+
+    # The following is for a 5x5 unit cell in which a defect can be incorporated
+    geometry_lattice = mp.Lattice(size=mp.Vector3(5, 5))
     geometry = [mp.Cylinder(radius, material=rods_material)]
+    geometry = mp.geometric_objects_lattice_duplicates(geometry_lattice, geometry)
+    geometry.append(mp.Cylinder(radius, material=bulk_material))
+
     return geometry_lattice, geometry
 
 
@@ -92,7 +100,7 @@ if __name__ == "__main__":
     # Important parameters to be passed to the mode solver
 
     num_bands = 8
-    k_points = mp.interpolate(20, k_points)
+    k_points = mp.interpolate(4, k_points)
     rods_material = mp.Medium(epsilon=12)
     bulk_material = mp.Medium(epsilon=1)
     resolution = 50  # Lattice constant is this many pixels
