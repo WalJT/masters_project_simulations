@@ -69,7 +69,13 @@ def plot_bands(bands, gaps):
 
 
 def set_up_lattice():
-    pass  # TODO
+    """
+    Returns geometry_lattice; A Lattice object with specified lattice vectors, and
+    geometry; objects that make up the basis of the crystal
+    """
+    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
+    geometry = [mp.Cylinder(radius, material=rods_material)]
+    return geometry_lattice, geometry
 
 
 def output_gap_list(gaps):
@@ -84,14 +90,15 @@ if __name__ == "__main__":
                 mp.Vector3()]  # Gamma
 
     # Important parameters to be passed to the mode solver
-    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
+
     num_bands = 8
     k_points = mp.interpolate(20, k_points)
     rods_material = mp.Medium(epsilon=12)
     bulk_material = mp.Medium(epsilon=1)
     resolution = 50  # Lattice constant is this many pixels
     radius = 0.2  # radius of the cylinders
-    geometry = [mp.Cylinder(radius, material=rods_material)]
+
+    geometry_lattice, geometry = set_up_lattice()
 
     # Create the ModeSolver
     ms = mpb.ModeSolver(num_bands=num_bands,
