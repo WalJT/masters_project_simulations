@@ -99,11 +99,11 @@ if __name__ == "__main__":
 
     # Important parameters to be passed to the mode solver
 
-    num_bands = 8
+    num_bands = 50
     k_points = mp.interpolate(4, k_points)
     rods_material = mp.Medium(epsilon=12)
     bulk_material = mp.Medium(epsilon=1)
-    resolution = 50  # Lattice constant is this many pixels
+    resolution = 15  # Lattice constant is this many pixels
     radius = 0.2  # radius of the cylinders
 
     geometry_lattice, geometry = set_up_crystal()
