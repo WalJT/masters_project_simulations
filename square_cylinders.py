@@ -10,34 +10,11 @@ from meep import mpb
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define points on the irreducible BZ
-k_points = [mp.Vector3(),  # Gamma
-            mp.Vector3(0.5),  # X
-            mp.Vector3(0.5, 0.5),  # M
-            mp.Vector3()]  # Gamma
 
-# Important parameters to be passed to the mode solver
-geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
-num_bands = 8
-k_points = mp.interpolate(20, k_points)
-rods_material = mp.Medium(epsilon=12)
-bulk_material = mp.Medium(epsilon=1)
-resolution = 50  # Lattice constant is this many pixels
-radius = 0.2  # radius of the cylinders
-geometry = [mp.Cylinder(radius, material=rods_material)]
-
-# Create the ModeSolver
-ms = mpb.ModeSolver(num_bands=num_bands,
-                    k_points=k_points,
-                    geometry=geometry,
-                    geometry_lattice=geometry_lattice,
-                    default_material=bulk_material,
-                    resolution=resolution)
-
-
-def do_calculations(polarization: str):
+def do_calculations(ms: mpb.ModeSolver, polarization: str):
     """
     Run MPB using the global modesolver
+    :param ms: MPB Mode Solver Object
     :param polarization: tm or te
     :return: bands (array)
     """
@@ -91,12 +68,40 @@ def plot_bands(bands, gaps):
     plt.show()
 
 
+def set_up_lattice():
+    pass  # TODO
+
+
 def output_gap_list(gaps):
     pass  # TODO
 
 
 if __name__ == "__main__":
-    band_frequencies, band_gaps = do_calculations("tm")
+    # Define points on the irreducible BZ
+    k_points = [mp.Vector3(),  # Gamma
+                mp.Vector3(0.5),  # X
+                mp.Vector3(0.5, 0.5),  # M
+                mp.Vector3()]  # Gamma
+
+    # Important parameters to be passed to the mode solver
+    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
+    num_bands = 8
+    k_points = mp.interpolate(20, k_points)
+    rods_material = mp.Medium(epsilon=12)
+    bulk_material = mp.Medium(epsilon=1)
+    resolution = 50  # Lattice constant is this many pixels
+    radius = 0.2  # radius of the cylinders
+    geometry = [mp.Cylinder(radius, material=rods_material)]
+
+    # Create the ModeSolver
+    ms = mpb.ModeSolver(num_bands=num_bands,
+                        k_points=k_points,
+                        geometry=geometry,
+                        geometry_lattice=geometry_lattice,
+                        default_material=bulk_material,
+                        resolution=resolution)
+
+    band_frequencies, band_gaps = do_calculations(ms, "tm")
     plot_bands(band_frequencies, band_gaps)
     display_lattice()
 
