@@ -68,7 +68,7 @@ def plot_bands(bands, gaps):
     plt.show()
 
 
-def set_up_lattice():
+def set_up_crystal():
     """
     Returns geometry_lattice; A Lattice object with specified lattice vectors, and
     geometry; objects that make up the basis of the crystal
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     resolution = 50  # Lattice constant is this many pixels
     radius = 0.2  # radius of the cylinders
 
-    geometry_lattice, geometry = set_up_lattice()
+    geometry_lattice, geometry = set_up_crystal()
 
     # Create the ModeSolver
     ms = mpb.ModeSolver(num_bands=num_bands,
