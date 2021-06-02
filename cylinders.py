@@ -113,7 +113,7 @@ def output_gap_list(gaps):
 if __name__ == "__main__":
     # Important parameters to be passed to the mode solver
     num_bands = 8
-    radius = 0.2  # radius of the cylinders
+    radius = 0.32  # radius of the cylinders in terms of lattice constant
     rods_material =mp.Medium(epsilon=1)
     bulk_material = mp.Medium(epsilon=12)
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
