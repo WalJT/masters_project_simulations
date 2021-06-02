@@ -32,7 +32,7 @@ def do_calculations(ms: mpb.ModeSolver, polarization: str):
 
 
 def display_lattice():
-    md = mpb.MPBData(periods=1, resolution=resolution, rectify=True)
+    md = mpb.MPBData(periods=4, resolution=resolution, rectify=True)
     eps = md.convert(ms.get_epsilon())
     # Show low dielectric constant as white, and high as black
     plt.imshow(eps, interpolation='spline36', cmap='binary')
@@ -68,22 +68,28 @@ def plot_bands(bands, gaps):
     plt.show()
 
 
-def set_up_crystal():
+def set_up_crystal(radius, rods_material):
     """
     Returns geometry_lattice; A Lattice object with specified lattice vectors, and
     geometry; objects that make up the basis of the crystal
     """
+    # Define points on the irreducible BZ
+    k_points = [mp.Vector3(),  # Gamma
+                mp.Vector3(0.5),  # X
+                mp.Vector3(0.5, 0.5),  # M
+                mp.Vector3()]  # Gamma
     # These are for a simple square lattice
-    # geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
-    # geometry = [mp.Cylinder(radius, material=rods_material)]
 
-    # The following is for a 5x5 unit cell in which a defect can be incorporated
-    geometry_lattice = mp.Lattice(size=mp.Vector3(5, 5))
+    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
     geometry = [mp.Cylinder(radius, material=rods_material)]
-    geometry = mp.geometric_objects_lattice_duplicates(geometry_lattice, geometry)
-    geometry.append(mp.Cylinder(radius, material=bulk_material))
 
-    return geometry_lattice, geometry
+    # The following is for a 5x5 unit cell of a square lattice in which a defect can be incorporated
+    # geometry_lattice = mp.Lattice(size=mp.Vector3(5, 5))
+    # geometry = [mp.Cylinder(radius, material=rods_material)]
+    # geometry = mp.geometric_objects_lattice_duplicates(geometry_lattice, geometry)
+    # geometry.append(mp.Cylinder(radius, material=bulk_material))
+    #
+    return geometry_lattice, geometry, k_points
 
 
 def output_gap_list(gaps):
@@ -91,22 +97,14 @@ def output_gap_list(gaps):
 
 
 if __name__ == "__main__":
-    # Define points on the irreducible BZ
-    k_points = [mp.Vector3(),  # Gamma
-                mp.Vector3(0.5),  # X
-                mp.Vector3(0.5, 0.5),  # M
-                mp.Vector3()]  # Gamma
-
     # Important parameters to be passed to the mode solver
-
-    num_bands = 50
-    k_points = mp.interpolate(4, k_points)
+    num_bands = 8
+    radius = 0.2  # radius of the cylinders
     rods_material = mp.Medium(epsilon=12)
     bulk_material = mp.Medium(epsilon=1)
+    geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
+    k_points = mp.interpolate(4, k_points)
     resolution = 15  # Lattice constant is this many pixels
-    radius = 0.2  # radius of the cylinders
-
-    geometry_lattice, geometry = set_up_crystal()
 
     # Create the ModeSolver
     ms = mpb.ModeSolver(num_bands=num_bands,
@@ -117,6 +115,8 @@ if __name__ == "__main__":
                         resolution=resolution)
 
     band_frequencies, band_gaps = do_calculations(ms, "tm")
+    plot_bands(band_frequencies, band_gaps)
+    band_frequencies, band_gaps = do_calculations(ms, "te")
     plot_bands(band_frequencies, band_gaps)
     display_lattice()
 
