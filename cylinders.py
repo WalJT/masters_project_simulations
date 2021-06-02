@@ -9,6 +9,7 @@ import meep as mp
 from meep import mpb
 import numpy as np
 import matplotlib.pyplot as plt
+from meep.materials import cSi
 
 
 def do_calculations(ms: mpb.ModeSolver, polarization: str):
@@ -113,8 +114,8 @@ if __name__ == "__main__":
     # Important parameters to be passed to the mode solver
     num_bands = 8
     radius = 0.2  # radius of the cylinders
-    rods_material = mp.Medium(epsilon=12)
-    bulk_material = mp.Medium(epsilon=1)
+    rods_material =mp.Medium(epsilon=1)
+    bulk_material = mp.Medium(epsilon=12)
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
     k_points = mp.interpolate(4, k_points)
     resolution = 15  # Lattice constant is this many pixels
