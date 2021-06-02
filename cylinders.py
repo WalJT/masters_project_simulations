@@ -1,5 +1,5 @@
 """
-A two dimensional square lattice of infinitely long
+A two dimensional lattice of infinitely long
 cylindrical rods. Created following the MPB tutorial at
 https://mpb.readthedocs.io/en/latest/Python_Tutorial/
 """
