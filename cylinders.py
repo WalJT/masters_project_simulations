@@ -115,7 +115,7 @@ if __name__ == "__main__":
     num_bands = 4
     radius = 0.32  # radius of the cylinders in terms of lattice constant
     rods_material = mp.air
-    bulk_material = materials.aSi
+    bulk_material = mp.Medium(index=3.42)
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
     k_points = mp.interpolate(40, k_points)
     resolution = 100  # Lattice constant is this many pixels
