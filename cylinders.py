@@ -117,8 +117,8 @@ if __name__ == "__main__":
     rods_material = mp.air
     bulk_material = materials.aSi
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
-    k_points = mp.interpolate(20, k_points)
-    resolution = 25  # Lattice constant is this many pixels
+    k_points = mp.interpolate(40, k_points)
+    resolution = 100  # Lattice constant is this many pixels
 
     # Create the ModeSolver
     ms = mpb.ModeSolver(num_bands=num_bands,
