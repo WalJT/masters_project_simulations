@@ -24,10 +24,10 @@ starting_corner = mp.Vector3(-5+cylinder_radius, -5+cylinder_radius)
 
 points = [starting_corner]
 
-# for i in range(0, 11):
-#     incrementer = mp.Vector3(i, i)
-#     next_point = starting_corner + incrementer
-#     geometry.append(mp.Cylinder(material=cylinder_material, radius=cylinder_radius, center=next_point))
+for i in range(0, 11):
+    incrementer = mp.Vector3(i, i)
+    next_point = starting_corner + incrementer
+    geometry.append(mp.Cylinder(material=cylinder_material, radius=cylinder_radius, center=next_point))
 
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
@@ -48,7 +48,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_every(0.1 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=100)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
+# sim.run(until=120)
 
 # plot data using matplotlib
 # First the dielectric
