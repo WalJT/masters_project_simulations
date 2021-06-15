@@ -9,23 +9,24 @@ from meep import materials
 import matplotlib.pyplot as plt
 
 # Create a "Cell", the region in space
-cell = mp.Vector3(12, 12, 0)
+cell = mp.Vector3(20, 20, 0)
 
 # Create the block of dielectric material
 geometry = [mp.Block(mp.Vector3(10, 10, mp.inf),
                      center=mp.Vector3(),
-                     material=mp.Medium(index=3.42))]
+                     material=mp.Medium(index=3.42)),
+            mp.Cylinder(radius=0.2, material=mp.air, center=mp.Vector3(4.5, 0))]
 
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
                      component=mp.Ez,
-                     center=mp.Vector3(0, 0))]
+                     center=mp.Vector3(7, 0, 0))]
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 10
+resolution = 75
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
