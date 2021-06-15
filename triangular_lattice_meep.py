@@ -20,14 +20,21 @@ geometry = [mp.Block(mp.Vector3(10, 10, mp.inf,),
 # Append air cylinders objects to the "geometry variable"
 cylinder_material = mp.air
 cylinder_radius = 0.2
+lattice_constant = 0.5
 starting_corner = mp.Vector3(-5+cylinder_radius, -5+cylinder_radius)
-
 points = [starting_corner]
 
-for i in range(0, 11):
-    incrementer = mp.Vector3(i, i)
-    next_point = starting_corner + incrementer
-    geometry.append(mp.Cylinder(material=cylinder_material, radius=cylinder_radius, center=next_point))
+for i in range(19):
+    old_y = points[i].y
+    new_y = old_y + lattice_constant
+    points[i].x = starting_corner.x
+    for n in range(19):
+        old_x = points[n].x
+        new_x = old_x + lattice_constant
+        points.append(mp.Vector3(new_x, new_y))
+
+for point in points:
+    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
@@ -38,7 +45,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 75
+resolution = 50
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -48,8 +55,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
-# sim.run(until=120)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
+sim.run(until=70)
 
 # plot data using matplotlib
 # First the dielectric
