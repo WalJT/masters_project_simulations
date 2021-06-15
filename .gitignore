@@ -3,6 +3,8 @@
 
 # Output Files
 *.out
+*.png
+*.h5
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -7,6 +7,7 @@ Adapted from https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/
 import meep as mp
 from meep import materials
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Create a "Cell", the region in space
 cell = mp.Vector3(20, 20, 0)
@@ -21,12 +22,12 @@ cylinder_material = mp.air
 cylinder_radius = 0.2
 starting_corner = mp.Vector3(-5+cylinder_radius, -5+cylinder_radius)
 
-for i in range(0, 11):
-    incrementer = mp.Vector3(i, i)
-    next_point = starting_corner + incrementer
-    geometry.append(mp.Cylinder(material=cylinder_material, radius=cylinder_radius, center=next_point))
+points = [starting_corner]
 
-geometry.append(mp.Cylinder(radius=0.2, center=starting_corner))
+# for i in range(0, 11):
+#     incrementer = mp.Vector3(i, i)
+#     next_point = starting_corner + incrementer
+#     geometry.append(mp.Cylinder(material=cylinder_material, radius=cylinder_radius, center=next_point))
 
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
@@ -47,7 +48,7 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(until=40)
+sim.run(mp.at_every(0.1 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=100)
 
 # plot data using matplotlib
 # First the dielectric
