@@ -20,27 +20,29 @@ geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
 
 # Append air cylinders objects to the "geometry variable"
 cylinder_material = mp.air
-cylinder_radius = 0.2
-lattice_constant = 0.5
+cylinder_radius = 0.5
+lattice_constant = 1
 starting_corner = mp.Vector3(-(block_width/2)+cylinder_radius, -(block_width/2)+cylinder_radius)
 points = [starting_corner]
 
 number_of_points = int(block_width / lattice_constant)
-y_loc = starting_corner.y
+new_y = starting_corner.y
 for i in range(number_of_points):
-    new_y = y_loc + lattice_constant
+    new_x = starting_corner.x
     for n in range(number_of_points):
-        new_x = points[n].x + lattice_constant
         points.append(mp.Vector3(new_x, new_y))
-    y_loc += lattice_constant
+        new_x += lattice_constant
+    new_y += lattice_constant
 
 for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
+geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
+
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1/1.25),  # 1/wavelength in microns
                      component=mp.Ez,
-                     center=mp.Vector3(7, 0, 0))]
+                     center=mp.Vector3(0, 0, 0))]
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(1.0)]
