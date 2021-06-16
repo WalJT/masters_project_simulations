@@ -13,7 +13,7 @@ import numpy as np
 cell = mp.Vector3(20, 20, 0)
 
 # Create the block of dielectric material
-block_width = 10
+block_width = 15
 geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
                      center=mp.Vector3(0, 0),
                      material=mp.Medium(index=3.42))]
@@ -40,7 +40,7 @@ for point in points:
 geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 
 # Place a source
-sources = [mp.Source(mp.ContinuousSource(frequency=1/1.25),  # 1/wavelength in microns
+sources = [mp.Source(mp.ContinuousSource(frequency=1/3.44),  # 1/wavelength in microns
                      component=mp.Ez,
                      center=mp.Vector3(0, 0, 0))]
 
@@ -58,8 +58,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
-sim.run(until=70)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=70)
+# sim.run(until=70)
 
 # plot data using matplotlib
 # First the dielectric
