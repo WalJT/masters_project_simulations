@@ -38,7 +38,7 @@ for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Place a source
-sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
+sources = [mp.Source(mp.ContinuousSource(frequency=1/1.25),  # 1/wavelength in microns
                      component=mp.Ez,
                      center=mp.Vector3(7, 0, 0))]
 

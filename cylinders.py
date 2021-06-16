@@ -75,14 +75,14 @@ def set_up_crystal(radius, rods_material):
     geometry; objects that make up the basis of the crystal
     """
     # Define points on the irreducible BZ for a square lattice
-    # k_points = [mp.Vector3(),  # Gamma
-    #             mp.Vector3(0.5),  # X
-    #             mp.Vector3(0.5, 0.5),  # M
-    #             mp.Vector3()]  # Gamma
+    k_points = [mp.Vector3(),  # Gamma
+                mp.Vector3(0.5),  # X
+                mp.Vector3(0.5, 0.5),  # M
+                mp.Vector3()]  # Gamma
     #
     # # These are for a simple square lattice
-    # geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
-    # geometry = [mp.Cylinder(radius, material=rods_material)]
+    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1))
+    geometry = [mp.Cylinder(radius, material=rods_material)]
 
     # The following is for a 5x5 unit cell of a square lattice in which a defect can be incorporated
     # geometry_lattice = mp.Lattice(size=mp.Vector3(5, 5))
@@ -91,17 +91,17 @@ def set_up_crystal(radius, rods_material):
     # geometry.append(mp.Cylinder(radius, material=bulk_material))
 
     # Define points on the irreducible BZ for a triangular (or hexagonal) lattice
-    k_points = [mp.Vector3(),               # Gamma
-                mp.Vector3(y=0.5),          # M
-                mp.Vector3(-1 / 3, 1 / 3),  # K
-                mp.Vector3()]               # Gamma
+    # k_points = [mp.Vector3(),               # Gamma
+    #             mp.Vector3(y=0.5),          # M
+    #             mp.Vector3(-1 / 3, 1 / 3),  # K
+    #             mp.Vector3()]               # Gamma
 
     # These are for a simple triangular lattice
-    geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1),
-                                    basis1=mp.Vector3(np.sqrt(3) / 2, 0.5),
-                                    basis2=mp.Vector3(np.sqrt(3) / 2, -0.5))
-
-    geometry = [mp.Cylinder(radius, material=rods_material)]
+    # geometry_lattice = mp.Lattice(size=mp.Vector3(1, 1),
+    #                                 basis1=mp.Vector3(np.sqrt(3) / 2, 0.5),
+    #                                 basis2=mp.Vector3(np.sqrt(3) / 2, -0.5))
+    #
+    # geometry = [mp.Cylinder(radius, material=rods_material)]
 
     return geometry_lattice, geometry, k_points
 
@@ -113,7 +113,7 @@ def output_gap_list(gaps):
 if __name__ == "__main__":
     # Important parameters to be passed to the mode solver
     num_bands = 4
-    radius = 0.32  # radius of the cylinders in terms of lattice constant
+    radius = 0.2/0.5  # radius of the cylinders in terms of lattice constant
     rods_material = mp.air
     bulk_material = mp.Medium(index=3.42)
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
