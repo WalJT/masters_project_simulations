@@ -4,6 +4,7 @@
 # Output Files
 *.out
 *.png
+*.mp4
 *.h5
 
 # Byte-compiled / optimized / DLL files
