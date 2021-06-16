@@ -46,7 +46,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1/1.25),  # 1/wavelength in m
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 75
+resolution = 50
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -56,8 +56,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
-# sim.run(until=70)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
+sim.run(until=70)
 
 # plot data using matplotlib
 # First the dielectric
