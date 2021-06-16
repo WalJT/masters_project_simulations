@@ -13,7 +13,8 @@ import numpy as np
 cell = mp.Vector3(20, 20, 0)
 
 # Create the block of dielectric material
-geometry = [mp.Block(mp.Vector3(10, 10, mp.inf,),
+block_width = 10
+geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
                      center=mp.Vector3(0, 0),
                      material=mp.Medium(index=3.42))]
 
@@ -21,17 +22,17 @@ geometry = [mp.Block(mp.Vector3(10, 10, mp.inf,),
 cylinder_material = mp.air
 cylinder_radius = 0.2
 lattice_constant = 0.5
-starting_corner = mp.Vector3(-5+cylinder_radius, -5+cylinder_radius)
+starting_corner = mp.Vector3(-(block_width/2)+cylinder_radius, -(block_width/2)+cylinder_radius)
 points = [starting_corner]
 
-for i in range(19):
-    old_y = points[i].y
-    new_y = old_y + lattice_constant
-    points[i].x = starting_corner.x
-    for n in range(19):
-        old_x = points[n].x
-        new_x = old_x + lattice_constant
+number_of_points = int(block_width / lattice_constant)
+y_loc = starting_corner.y
+for i in range(number_of_points):
+    new_y = y_loc + lattice_constant
+    for n in range(number_of_points):
+        new_x = points[n].x + lattice_constant
         points.append(mp.Vector3(new_x, new_y))
+    y_loc += lattice_constant
 
 for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
@@ -45,7 +46,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1/0.4),
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 50
+resolution = 75
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -55,8 +56,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
-sim.run(until=70)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=120)
+# sim.run(until=70)
 
 # plot data using matplotlib
 # First the dielectric
