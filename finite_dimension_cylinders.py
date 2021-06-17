@@ -12,14 +12,18 @@ import numpy as np
 # Create a "Cell", the region in space
 cell = mp.Vector3(30, 30, 0)
 
+# Define the materials to use
+block_material = mp.Medium(index=3.42)
+cylinder_material = mp.air
+waveguide_material = block_material
+
 # Create the block of dielectric material
 block_width = 25
 geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
                      center=mp.Vector3(0, 0),
-                     material=mp.Medium(index=3.42))]
+                     material=block_material)]
 
-# Append air cylinders objects to the "geometry variable"
-cylinder_material = mp.air
+# Append cylinders objects to the "geometry variable"
 cylinder_radius = 0.5
 lattice_constant = 1
 starting_corner = mp.Vector3(-(block_width/2)+cylinder_radius, -(block_width/2)+cylinder_radius)
@@ -37,6 +41,7 @@ for i in range(number_of_points):
 for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
+# Hollow structure center to place a source
 geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 
 # Place a source
@@ -45,10 +50,19 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1/3.44),  # 1/wavelength in m
                      center=mp.Vector3(0, 0, 0))]
 
 # Add a waveguide
-wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
-               center=mp.Vector3(block_width/4 + 0.5, 0),
-               material=mp.Medium(index=3.42))
+# wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
+#                center=mp.Vector3(block_width/4 + 0.5, 0),
+#                material=mp.Medium(index=3.42))
+
+wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
+               center=mp.Vector3(block_width/8 + 1, 0),
+               material=waveguide_material)
+wg2 = mp.Block(mp.Vector3(1.2, block_width/2, mp.inf),
+               center=mp.Vector3(block_width/4 + 0.5, block_width/4),
+               material=waveguide_material)
+
 geometry.append(wg1)
+geometry.append(wg2)
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(1.0)]
