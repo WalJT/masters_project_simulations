@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Create a "Cell", the region in space
-cell = mp.Vector3(20, 20, 0)
+cell = mp.Vector3(30, 30, 0)
 
 # Create the block of dielectric material
-block_width = 15
+block_width = 25
 geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
                      center=mp.Vector3(0, 0),
                      material=mp.Medium(index=3.42))]
@@ -43,6 +43,12 @@ geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 sources = [mp.Source(mp.ContinuousSource(frequency=1/3.44),  # 1/wavelength in microns
                      component=mp.Ez,
                      center=mp.Vector3(0, 0, 0))]
+
+# Add a waveguide
+wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
+               center=mp.Vector3(block_width/4 + 0.5, 0),
+               material=mp.Medium(index=3.42))
+geometry.append(wg1)
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(1.0)]
