@@ -15,7 +15,7 @@ cell = mp.Vector3(30, 30, 0)
 # Define the materials to use
 block_material = mp.Medium(index=3.42)
 cylinder_material = mp.air
-waveguide_material = block_material
+waveguide_material = cylinder_material
 
 # Create the block of dielectric material
 block_width = 25
@@ -52,8 +52,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1/3.44),  # 1/wavelength in m
 # Add a waveguide
 # wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
 #                center=mp.Vector3(block_width/4 + 0.5, 0),
-#                material=mp.Medium(index=3.42))
-
+#                material=waveguide_material)
 wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
                center=mp.Vector3(block_width/8 + 1, 0),
                material=waveguide_material)
