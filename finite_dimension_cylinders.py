@@ -10,15 +10,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Create a "Cell", the region in space
-cell = mp.Vector3(30, 30, 0)
+cell = mp.Vector3(500, 500, 0)
 
 # Define the materials to use
-block_material = mp.Medium(index=3.42)
+block_material = materials.aSi
 cylinder_material = mp.air
-waveguide_material = cylinder_material
+waveguide_material = block_material
 
 # Create the block of dielectric material
-block_width = 25
+block_width = 490
 geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
@@ -77,8 +77,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=70)
-# sim.run(until=70)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=70)
+sim.run(until=120)
 
 # plot data using matplotlib
 # First the dielectric
