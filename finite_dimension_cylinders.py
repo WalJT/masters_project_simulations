@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Create a "Cell", the region in space
-cell = mp.Vector3(500, 500, 0)
+cell = mp.Vector3(500, 600, 0)
 
 # Define the materials to use
-block_material = materials.aSi
+block_material = materials.cSi
 cylinder_material = mp.air
 waveguide_material = block_material
 
@@ -24,8 +24,8 @@ geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
                      material=block_material)]
 
 # Append cylinders objects to the "geometry variable"
-cylinder_radius = 0.5
-lattice_constant = 1
+cylinder_radius = 21.0
+lattice_constant = 65.7
 starting_corner = mp.Vector3(-(block_width/2)+cylinder_radius, -(block_width/2)+cylinder_radius)
 points = [starting_corner]
 
@@ -42,32 +42,32 @@ for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Hollow structure center to place a source
-geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
+# geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 
 # Place a source
-sources = [mp.Source(mp.ContinuousSource(frequency=1/3.44),  # 1/wavelength in microns
+sources = [mp.Source(mp.ContinuousSource(frequency=1/210),  # 1/wavelength in microns
                      component=mp.Ez,
-                     center=mp.Vector3(0, 0, 0))]
+                     center=mp.Vector3(0, -250, 0))]
 
 # Add a waveguide
 # wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
 #                center=mp.Vector3(block_width/4 + 0.5, 0),
 #                material=waveguide_material)
-wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
-               center=mp.Vector3(block_width/8 + 1, 0),
-               material=waveguide_material)
-wg2 = mp.Block(mp.Vector3(1.2, block_width/2, mp.inf),
-               center=mp.Vector3(block_width/4 + 0.5, block_width/4),
-               material=waveguide_material)
-
-geometry.append(wg1)
-geometry.append(wg2)
+# wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
+#                center=mp.Vector3(block_width/8 + 1, 0),
+#                material=waveguide_material)
+# wg2 = mp.Block(mp.Vector3(1.2, block_width/2, mp.inf),
+#                center=mp.Vector3(block_width/4 + 0.5, block_width/4),
+#                material=waveguide_material)
+#
+# geometry.append(wg1)
+# geometry.append(wg2)
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 50
+resolution = 20
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -78,7 +78,7 @@ sim = mp.Simulation(cell_size=cell,
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=70)
-sim.run(until=120)
+sim.run(until=15)
 
 # plot data using matplotlib
 # First the dielectric
