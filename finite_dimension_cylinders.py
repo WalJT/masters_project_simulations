@@ -13,7 +13,7 @@ import numpy as np
 cell = mp.Vector3(500, 600, 0)
 
 # Define the materials to use
-block_material = materials.cSi
+block_material = mp.Medium(index=3.42)
 cylinder_material = mp.air
 waveguide_material = block_material
 
