@@ -37,7 +37,7 @@ for i in range(number_of_points):
         points.append(mp.Vector3(new_x, new_y))
         new_x += lattice_constant
     new_y += lattice_constant
-
+    
 for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
