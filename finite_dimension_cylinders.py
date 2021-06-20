@@ -83,7 +83,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in 
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 20
+resolution = 5
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -93,7 +93,7 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=200)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=100)
 # sim.run(until=5)
 
 # plot data using matplotlib
