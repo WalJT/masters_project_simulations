@@ -9,27 +9,27 @@ from meep import materials
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Create a "Cell", the region in space
-cell = mp.Vector3(500, 600, 0)
-
 # Define the materials to use
 block_material = mp.Medium(index=3.42)
 cylinder_material = mp.air
 waveguide_material = block_material
 
 # Create the block of dielectric material
-block_width = 490
-geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf, ),
+block_x_width = 490
+block_y_width = 600
+# Create a "Cell", the region in space
+cell = mp.Vector3(block_x_width+50, block_y_width+100, 0)
+geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf, ),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
 
 # Append cylinders objects to the "geometry variable"
 cylinder_radius = 21.0
 lattice_constant = 65.7
-starting_corner = mp.Vector3(-(block_width / 2) + cylinder_radius, -(block_width / 2) + cylinder_radius)
+starting_corner = mp.Vector3(-(block_x_width / 2) + cylinder_radius, -(block_y_width / 2) + cylinder_radius)
 points = [starting_corner]
-number_of_cols = int(block_width / lattice_constant)
-number_of_rows = int(block_width / lattice_constant)
+number_of_cols = int(block_x_width / lattice_constant) + 2
+number_of_rows = int(block_y_width / lattice_constant) + 2
 
 # Create a triangular lattice
 lattice_vectors = (mp.Vector3(lattice_constant, 0),
@@ -63,7 +63,7 @@ for point in points:
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in microns
                      component=mp.Ez,
-                     center=mp.Vector3(0, -250, 0))]
+                     center=mp.Vector3(0, -(block_y_width+50), 0))]
 
 # Add a waveguide
 # wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
@@ -83,7 +83,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in 
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 10
+resolution = 20
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -93,8 +93,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=70)
-sim.run(until=5)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=200)
+# sim.run(until=5)
 
 # plot data using matplotlib
 # First the dielectric
