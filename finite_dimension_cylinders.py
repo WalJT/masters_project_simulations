@@ -28,16 +28,22 @@ cylinder_radius = 21.0
 lattice_constant = 65.7
 starting_corner = mp.Vector3(-(block_width/2)+cylinder_radius, -(block_width/2)+cylinder_radius)
 points = [starting_corner]
+number_of_cols = int(block_width / lattice_constant)
+number_of_rows = int(block_width / lattice_constant)
 
-number_of_points = int(block_width / lattice_constant)
-new_y = starting_corner.y
-for i in range(number_of_points):
-    new_x = starting_corner.x
-    for n in range(number_of_points):
-        points.append(mp.Vector3(new_x, new_y))
-        new_x += lattice_constant
-    new_y += lattice_constant
-    
+square_lattice_vectors = (mp.Vector3(lattice_constant, 0), mp.Vector3(0, lattice_constant))
+
+for col in range(number_of_cols):
+    for row in range(number_of_rows):
+        new_point = points[col*row] + (square_lattice_vectors[1])
+        points.append(new_point)
+    new_point = points[col] + (col*square_lattice_vectors[0]) - (col*square_lattice_vectors[1])
+    points.append(new_point)
+
+print(number_of_cols)
+print(square_lattice_vectors)
+print(points)
+
 for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
@@ -67,7 +73,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1/210),  # 1/wavelength in mi
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 20
+resolution = 10
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -78,7 +84,7 @@ sim = mp.Simulation(cell_size=cell,
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=70)
-sim.run(until=15)
+sim.run(until=5)
 
 # plot data using matplotlib
 # First the dielectric
