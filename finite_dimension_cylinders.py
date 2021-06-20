@@ -35,7 +35,7 @@ square_lattice_vectors = (mp.Vector3(lattice_constant, 0), mp.Vector3(0, lattice
 
 for col in range(number_of_cols):
     for row in range(number_of_rows):
-        new_point = points[col*row] + (square_lattice_vectors[1])
+        new_point = points[row] + (square_lattice_vectors[1]) + col*(square_lattice_vectors[0])
         points.append(new_point)
     new_point = points[col] + (col*square_lattice_vectors[0]) - (col*square_lattice_vectors[1])
     points.append(new_point)
