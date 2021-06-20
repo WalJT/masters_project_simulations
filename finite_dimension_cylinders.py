@@ -19,30 +19,40 @@ waveguide_material = block_material
 
 # Create the block of dielectric material
 block_width = 490
-geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf,),
+geometry = [mp.Block(mp.Vector3(block_width, block_width, mp.inf, ),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
 
 # Append cylinders objects to the "geometry variable"
 cylinder_radius = 21.0
 lattice_constant = 65.7
-starting_corner = mp.Vector3(-(block_width/2)+cylinder_radius, -(block_width/2)+cylinder_radius)
+starting_corner = mp.Vector3(-(block_width / 2) + cylinder_radius, -(block_width / 2) + cylinder_radius)
 points = [starting_corner]
 number_of_cols = int(block_width / lattice_constant)
 number_of_rows = int(block_width / lattice_constant)
 
-square_lattice_vectors = (mp.Vector3(lattice_constant, 0), mp.Vector3(0, lattice_constant))
-
+# Create a triangular lattice
+lattice_vectors = (mp.Vector3(lattice_constant, 0),
+                   mp.Vector3(lattice_constant / 2, np.sqrt(3)*lattice_constant / 2),
+                   mp.Vector3(-lattice_constant / 2, np.sqrt(3)*lattice_constant / 2))
 for col in range(number_of_cols):
     for row in range(number_of_rows):
-        new_point = points[row] + (square_lattice_vectors[1]) + col*(square_lattice_vectors[0])
+        if row == 0:
+            new_point = points[row] + col * (lattice_vectors[0])
+        else:
+            if (row % 2) == 0:
+                new_point = points[row] + (lattice_vectors[1]) + col * (lattice_vectors[0])
+            else:
+                new_point = points[row] + (lattice_vectors[2]) + col * (lattice_vectors[0])
         points.append(new_point)
-    new_point = points[col] + (col*square_lattice_vectors[0]) - (col*square_lattice_vectors[1])
+
+    new_point = points[col] + (col * lattice_vectors[0]) - (col * lattice_vectors[1])
     points.append(new_point)
 
-print(number_of_cols)
-print(square_lattice_vectors)
-print(points)
+# print(number_of_cols)
+# print(square_lattice_vectors)
+# print(points)
+
 
 for point in points:
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
@@ -51,7 +61,7 @@ for point in points:
 # geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 
 # Place a source
-sources = [mp.Source(mp.ContinuousSource(frequency=1/210),  # 1/wavelength in microns
+sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in microns
                      component=mp.Ez,
                      center=mp.Vector3(0, -250, 0))]
 
