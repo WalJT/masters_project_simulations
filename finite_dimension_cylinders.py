@@ -18,7 +18,7 @@ waveguide_material = block_material
 block_x_width = 490
 block_y_width = 600
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width+50, block_y_width+100, 0)
+cell = mp.Vector3(block_x_width+100, block_y_width+100, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf, ),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
@@ -63,7 +63,7 @@ for point in points:
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in microns
                      component=mp.Ez,
-                     center=mp.Vector3(0, -(block_y_width+50), 0))]
+                     center=mp.Vector3((block_x_width+50)/2, 0, 0))]
 
 # Add a waveguide
 # wg1 = mp.Block(mp.Vector3(block_width/2 - 1, 1.2, mp.inf),
@@ -83,7 +83,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in 
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 5
+resolution = 2
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -93,8 +93,8 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=100)
-# sim.run(until=5)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=10)
+sim.run(until=10)
 
 # plot data using matplotlib
 # First the dielectric
