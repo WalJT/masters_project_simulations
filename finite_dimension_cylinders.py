@@ -15,7 +15,7 @@ cylinder_material = mp.air
 waveguide_material = block_material
 
 # Create the block of dielectric material
-block_x_width = 490
+block_x_width = 1000
 block_y_width = 600
 # Create a "Cell", the region in space
 cell = mp.Vector3(block_x_width+100, block_y_width+100, 0)
@@ -61,7 +61,7 @@ for point in points:
 # geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 
 # Place a source
-sources = [mp.Source(mp.ContinuousSource(frequency=1 / 4),  # 1/wavelength in microns
+sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in microns
                      component=mp.Ez,
                      center=mp.Vector3((block_x_width+50)/2, 0, 0))]
 
@@ -83,7 +83,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=1 / 4),  # 1/wavelength in mi
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 10
+resolution = 1
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -93,7 +93,7 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.05, mp.output_efield_z)),  until=50)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=10000)
 # sim.run(until=10)
 
 # plot data using matplotlib
