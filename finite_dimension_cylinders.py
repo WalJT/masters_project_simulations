@@ -95,7 +95,7 @@ sim = mp.Simulation(cell_size=cell,
 # Run the simulation
 sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=10000)
 # sim.run(until=10000)
-\
+
 # plot data using matplotlib
 # First the dielectric
 eps_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Dielectric)
