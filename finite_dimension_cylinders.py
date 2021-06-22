@@ -62,7 +62,7 @@ for point in points:
 
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1 / 300),  # 1/wavelength in microns
-                     component=mp.Ez,
+                     component=mp.Ey,
                      center=mp.Vector3((block_x_width+50)/2, 0, 0))]
 
 # Add a waveguide
@@ -93,7 +93,7 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=10000)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("Ey", mp.at_every(1, mp.output_hfield_z)),  until=10000)
 # sim.run(until=10000)
 
 # plot data using matplotlib
@@ -105,9 +105,9 @@ plt.axis('off')
 plt.show()
 
 # and then the field diagram
-ez_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Ez)
+hz_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Hz)
 plt.figure()
 plt.imshow(eps_data.transpose(), interpolation='spline36', cmap='binary')
-plt.imshow(ez_data.transpose(), interpolation='spline36', cmap='RdBu', alpha=0.9)
+plt.imshow(hz_data.transpose(), interpolation='spline36', cmap='RdBu', alpha=0.9)
 plt.axis('off')
 plt.show()
