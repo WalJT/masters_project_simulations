@@ -16,7 +16,7 @@ waveguide_material = block_material
 
 # Create the block of dielectric material
 block_x_width = 1000
-block_y_width = 600
+block_y_width = 500
 # Create a "Cell", the region in space
 cell = mp.Vector3(block_x_width+100, block_y_width+100, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf, ),
@@ -63,6 +63,7 @@ for point in points:
 # Place a source
 sources = [mp.Source(mp.ContinuousSource(frequency=1 / 300),  # 1/wavelength in microns
                      component=mp.Ey,
+                     size=mp.Vector3(0, block_y_width),
                      center=mp.Vector3((block_x_width+50)/2, 0, 0))]
 
 # Add a waveguide
@@ -93,7 +94,7 @@ sim = mp.Simulation(cell_size=cell,
                     resolution=resolution)
 
 # Run the simulation
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("Ey", mp.at_every(1, mp.output_hfield_z)),  until=10000)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("Ey", mp.at_every(1, mp.output_hfield_z)),  until=5000)
 # sim.run(until=10000)
 
 # plot data using matplotlib
