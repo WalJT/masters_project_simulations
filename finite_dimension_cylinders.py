@@ -61,7 +61,7 @@ for point in points:
 # geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
 
 # Place a source
-sources = [mp.Source(mp.ContinuousSource(frequency=1 / 210),  # 1/wavelength in microns
+sources = [mp.Source(mp.ContinuousSource(frequency=1 / 300),  # 1/wavelength in microns
                      component=mp.Ez,
                      center=mp.Vector3((block_x_width+50)/2, 0, 0))]
 
@@ -94,8 +94,8 @@ sim = mp.Simulation(cell_size=cell,
 
 # Run the simulation
 sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=10000)
-# sim.run(until=10)
-
+# sim.run(until=10000)
+\
 # plot data using matplotlib
 # First the dielectric
 eps_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Dielectric)
