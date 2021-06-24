@@ -53,8 +53,8 @@ for col in range(number_of_cols):
 # print(square_lattice_vectors)
 # print(points)
 
-for point in points:
-    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
+# for point in points:
+#     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Hollow structure center to place a source
 # geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
