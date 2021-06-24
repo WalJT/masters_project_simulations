@@ -15,8 +15,8 @@ cylinder_material = mp.air
 waveguide_material = block_material
 
 # Create the block of dielectric material
-block_x_width = 500
-block_y_width = 2000
+block_x_width = 1000
+block_y_width = 200
 # Create a "Cell", the region in space
 cell = mp.Vector3(block_x_width + 200, block_y_width + 1, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf, ),
@@ -106,8 +106,8 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("Ey", mp.at_every(1, mp.output_hfield_z)),  until=5000)
-# sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ey, flux_plane, 1e-3))7
-sim.run(until=5000)
+sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ey, flux_plane, 1e-3))
+# sim.run(until=5000)
 sim.display_fluxes(trans)
 
 # plot data using matplotlib
