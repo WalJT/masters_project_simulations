@@ -53,8 +53,8 @@ for col in range(number_of_cols):
 # print(square_lattice_vectors)
 # print(points)
 
-# for point in points:
-#     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
+for point in points:
+    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Hollow structure center to place a source
 # geometry.append(mp.Cylinder(radius=1, material=mp.air, center=mp.Vector3(0, 0)))
@@ -91,7 +91,7 @@ resolution = 1
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
                     boundary_layers=pml_layers,
-                    geometry=geometry,
+                    geometry=list(),
                     sources=sources,
                     resolution=resolution)
 
@@ -109,6 +109,10 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 # sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ey, flux_plane, 1e-3))7
 sim.run(until=5000)
 sim.display_fluxes(trans)
+transmitted_flux = mp.get_fluxes(trans)
+flux_freqs = mp.get_flux_freqs(trans)
+plt.plot(flux_freqs, transmitted_flux)
+plt.show()
 
 # plot data using matplotlib
 # First the dielectric
