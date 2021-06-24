@@ -8,6 +8,7 @@ import meep as mp
 from meep import materials
 import matplotlib.pyplot as plt
 import numpy as np
+import lattices
 
 # Define the materials to use
 block_material = mp.Medium(index=3.42)
@@ -18,7 +19,7 @@ waveguide_material = block_material
 block_x_width = 1000
 block_y_width = 200
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width + 200, block_y_width + 1, 0)
+cell = mp.Vector3(block_x_width + 200, block_y_width + 100, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf, ),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
@@ -32,28 +33,7 @@ number_of_cols = int(block_x_width / lattice_constant) + 2
 number_of_rows = int(block_y_width / lattice_constant) + 20
 
 # Create a triangular lattice
-lattice_vectors = (mp.Vector3(lattice_constant, 0),
-                   mp.Vector3(lattice_constant / 2, np.sqrt(3) * lattice_constant / 2),
-                   mp.Vector3(-lattice_constant / 2, np.sqrt(3) * lattice_constant / 2))
-for col in range(number_of_cols):
-    for row in range(number_of_rows):
-        if row == 0:
-            new_point = points[row] + col * (lattice_vectors[0])
-        else:
-            if (row % 2) == 0:
-                new_point = points[row] + (lattice_vectors[1]) + col * (lattice_vectors[0])
-            else:
-                new_point = points[row] + (lattice_vectors[2]) + col * (lattice_vectors[0])
-        points.append(new_point)
-
-    new_point = points[col] + (col * lattice_vectors[0]) - (col * lattice_vectors[1])
-    points.append(new_point)
-
-# print(number_of_cols)
-# print(square_lattice_vectors)
-# print(points)
-
-for point in points:
+for point in lattices.triangular(lattice_constant, number_of_rows, number_of_cols, starting_corner):
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Hollow structure center to place a source
@@ -91,7 +71,7 @@ resolution = 1
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
                     boundary_layers=pml_layers,
-                    geometry=list(),
+                    geometry=geometry,
                     sources=sources,
                     resolution=resolution)
 
@@ -106,8 +86,8 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("Ey", mp.at_every(1, mp.output_hfield_z)),  until=5000)
-sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ey, flux_plane, 1e-3))
-# sim.run(until=5000)
+# sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ey, flux_plane, 1e-3))
+sim.run(until=5000)
 sim.display_fluxes(trans)
 transmitted_flux = mp.get_fluxes(trans)
 flux_freqs = mp.get_flux_freqs(trans)
