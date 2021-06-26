@@ -16,8 +16,8 @@ cylinder_material = mp.Medium(index=3.42)
 waveguide_material = block_material
 
 # Create the block of dielectric material
-block_x_width = 2000
-block_y_width = 2000
+block_x_width = 1000
+block_y_width = 1000
 # Create a "Cell", the region in space
 cell = mp.Vector3(block_x_width + 500, block_y_width + 500, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf, ),
@@ -42,15 +42,15 @@ df = 1/100    # pulse frequency width
 
 geometry.append(mp.Cylinder(material=mp.air, radius=300, center=mp.Vector3(0, 0)))
 
-sources = [mp.Source(mp.ContinuousSource(fcen),  # 1/wavelength in microns
+sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),  # 1/wavelength in microns
                      component=mp.Ez,
                      size=mp.Vector3(0, 0),
                      center=mp.Vector3(0, 0, 0))]
 
 # Add a waveguide
-wg1 = mp.Block(mp.Vector3(block_y_width/2 - 1, 50, mp.inf),
-               center=mp.Vector3(block_x_width/4 + 200, 0),
-               material=waveguide_material)
+# wg1 = mp.Block(mp.Vector3(block_y_width/2 - 1, 50, mp.inf),
+#                center=mp.Vector3(block_x_width/4 + 200, 0),
+#                material=waveguide_material)
 # wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
 #                center=mp.Vector3(block_width/8 + 1, 0),
 #                material=waveguide_material)
@@ -58,40 +58,40 @@ wg1 = mp.Block(mp.Vector3(block_y_width/2 - 1, 50, mp.inf),
 #                center=mp.Vector3(block_width/4 + 0.5, block_width/4),
 #                material=waveguide_material)
 #
-geometry.append(wg1)
+# geometry.append(wg1)
 # geometry.append(wg2)
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(1.0)]
 
 # Resolution in pixels per micron
-resolution = 1
+resolution = 1/2
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
                     boundary_layers=pml_layers,
-                    geometry=geometry,
+                    geometry=[],
                     sources=sources,
                     resolution=resolution)
 
-flux_plane = mp.Vector3(-(block_x_width/2 + 50))
+flux_plane = mp.Vector3(block_x_width/2 + 100)
 freg = mp.FluxRegion(center=flux_plane,
                      size=mp.Vector3(0, 40))
 
-# nfreq = 500  # number of frequencies at which to compute flux
+nfreq = 500  # number of frequencies at which to compute flux
 
 # transmitted flux
-# trans = sim.add_flux(fcen, df, nfreq, freg)
+trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=5000)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=5000)
 # sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
-sim.run(until=5000)
+# sim.run(until=5000)
 # sim.display_fluxes(trans)
-# transmitted_flux = mp.get_fluxes(trans)
-# flux_freqs = mp.get_flux_freqs(trans)
-# plt.plot(flux_freqs, transmitted_flux)
-# plt.show()
+transmitted_flux = mp.get_fluxes(trans)
+flux_freqs = mp.get_flux_freqs(trans)
+plt.plot(flux_freqs, transmitted_flux)
+plt.show()
 
 # plot data using matplotlib
 # First the dielectric
