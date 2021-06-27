@@ -19,7 +19,7 @@ waveguide_material = block_material
 block_x_width = 1000
 block_y_width = 3000
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width+500, block_y_width, 0)
+cell = mp.Vector3(block_x_width+1000, block_y_width, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
@@ -38,13 +38,13 @@ for point in lattices.square(lattice_constant, number_of_rows, number_of_cols, s
 # Place a source
 # use a gaussian source and get a transmission spectrum (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
 fcen = 1/100  # Center frequency
-df = 1/100    # pulse frequency width
+df = 1/200    # pulse frequency width
 
 # geometry.append(mp.Cylinder(material=mp.air, radius=300, center=mp.Vector3(0, 0)))
 
 sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),  # 1/wavelength in microns
                      component=mp.Ez,
-                     size=mp.Vector3(0, 0),
+                     size=mp.Vector3(0, block_y_width-300),
                      center=mp.Vector3(-(block_x_width/2 + 50), 0, 0))]
 
 # Add a waveguide
@@ -62,7 +62,7 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),  # 1/wavelength in micr
 # geometry.append(wg2)
 
 # "Perfectly Matched Layers" (cell boundaries)
-pml_layers = [mp.PML(100)]
+pml_layers = [mp.PML(300)]
 
 # Resolution in pixels per micron
 resolution = 1/2
@@ -89,10 +89,19 @@ sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1
 # sim.run(until=5000)
 # sim.display_fluxes(trans)
 
-# Get the frequencies and flux values for the empty cell
+# Get the frequencies and flux values
 flux_freqs = mp.get_flux_freqs(trans)
-flux = mp.get_fluxes(trans)
+fluxes = mp.get_fluxes(trans)
+plt.plot(flux_freqs, fluxes)
+plt.show()
 
+with open("out.txt", "w") as file:
+    file.write("Freqs\n")
+    for freq in flux_freqs:
+        file .write(str(freq)+"\n")
+    file.write("Flux\n")
+    for flux in fluxes:
+        file.write(str(flux)+"\n")
 
 
 # plot data using matplotlib
