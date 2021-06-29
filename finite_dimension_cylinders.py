@@ -10,23 +10,31 @@ import matplotlib.pyplot as plt
 import numpy as np
 import lattices
 
-# Define the materials to use
+# Define the materials to use, and other parameters
 block_material = mp.air
-cylinder_material = mp.Medium(index=3.42)
+cylinder_material = mp.Medium(epsilon=3.61)
 waveguide_material = block_material
+pml_thickness = 100
+lattice_constant = 15.08
+cylinder_radius = 3.7
+block_x_width = np.ceil(8*lattice_constant)
+block_y_width = np.ceil(8*lattice_constant)+600
+
+# Current source information
+fcen = 1/40  # (Center) frequency
+df = 1/25    # pulse frequency width (for Gaussian Sources)
+source_x_loc = -(block_x_width/2 + 60)
+source_y_loc = 0
 
 # Create the block of dielectric material
-block_x_width = 1000
-block_y_width = 3000
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width+1000, block_y_width, 0)
+cell = mp.Vector3(block_x_width+1000, block_y_width+0.5*pml_thickness, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
 
 # Append cylinders objects to the "geometry variable"
-cylinder_radius = 21.0
-lattice_constant = 65.7
+
 starting_corner = mp.Vector3(-(block_x_width / 2) + cylinder_radius, -(block_y_width / 2) + cylinder_radius)
 number_of_cols = int(block_x_width / lattice_constant)
 number_of_rows = int(block_y_width / lattice_constant)
@@ -35,17 +43,13 @@ number_of_rows = int(block_y_width / lattice_constant)
 for point in lattices.square(lattice_constant, number_of_rows, number_of_cols, starting_corner):
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
-# Place a source
-# use a gaussian source and get a transmission spectrum (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
-fcen = 1/100  # Center frequency
-df = 1/200    # pulse frequency width
-
+# Place a source use a gaussian source and get a transmission spectrum
+# (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
 # geometry.append(mp.Cylinder(material=mp.air, radius=300, center=mp.Vector3(0, 0)))
-
 sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),  # 1/wavelength in microns
                      component=mp.Ez,
-                     size=mp.Vector3(0, block_y_width-300),
-                     center=mp.Vector3(-(block_x_width/2 + 50), 0, 0))]
+                     size=mp.Vector3(0, 40),
+                     center=mp.Vector3(source_x_loc, source_y_loc, 0))]
 
 # Add a waveguide
 # wg1 = mp.Block(mp.Vector3(block_y_width/2 - 1, 50, mp.inf),
@@ -62,10 +66,10 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),  # 1/wavelength in micr
 # geometry.append(wg2)
 
 # "Perfectly Matched Layers" (cell boundaries)
-pml_layers = [mp.PML(300)]
+pml_layers = [mp.PML(pml_thickness)]
 
 # Resolution in pixels per micron
-resolution = 1/2
+resolution = 2
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
@@ -74,7 +78,7 @@ sim = mp.Simulation(cell_size=cell,
                     sources=sources,
                     resolution=resolution)
 
-flux_plane = mp.Vector3((block_x_width/2) + 50)
+flux_plane = mp.Vector3(-source_x_loc)
 freg = mp.FluxRegion(center=flux_plane,
                      size=mp.Vector3(0, 40))
 
@@ -86,7 +90,7 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=5000)
 sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
-# sim.run(until=5000)
+# sim.run(until=200)
 # sim.display_fluxes(trans)
 
 # Get the frequencies and flux values
