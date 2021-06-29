@@ -22,7 +22,7 @@ block_y_width = np.ceil(8*lattice_constant)+600
 
 # Current source information
 fcen = 1/40  # (Center) frequency
-df = 1/25    # pulse frequency width (for Gaussian Sources)
+df = 1/41    # pulse frequency width (for Gaussian Sources)
 source_x_loc = -(block_x_width/2 + 60)
 source_y_loc = 0
 
@@ -40,8 +40,8 @@ number_of_cols = int(block_x_width / lattice_constant)
 number_of_rows = int(block_y_width / lattice_constant)
 
 # Create a square lattice
-for point in lattices.square(lattice_constant, number_of_rows, number_of_cols, starting_corner):
-    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
+# for point in lattices.square(lattice_constant, number_of_rows, number_of_cols, starting_corner):
+#     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Place a source use a gaussian source and get a transmission spectrum
 # (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
@@ -89,7 +89,7 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=5000)
-sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)), until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
 # sim.run(until=200)
 # sim.display_fluxes(trans)
 
