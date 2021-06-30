@@ -21,7 +21,7 @@ block_x_width = np.ceil(8*lattice_constant)
 block_y_width = np.ceil(8*lattice_constant)+600
 
 # Current source information
-fcen = 1/40  # (Center) frequency
+fcen = 1/40  # (Center) frequency; 1/wavelength in microns
 df = 1/41    # pulse frequency width (for Gaussian Sources)
 source_x_loc = -(block_x_width/2 + 60)
 source_y_loc = 0
@@ -46,7 +46,7 @@ number_of_rows = int(block_y_width / lattice_constant)
 # Place a source use a gaussian source and get a transmission spectrum
 # (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
 # geometry.append(mp.Cylinder(material=mp.air, radius=300, center=mp.Vector3(0, 0)))
-sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),  # 1/wavelength in microns
+sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
                      component=mp.Ez,
                      size=mp.Vector3(0, 40),
                      center=mp.Vector3(source_x_loc, source_y_loc, 0))]
