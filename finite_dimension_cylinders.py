@@ -89,7 +89,7 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=5000)
-sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)), until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
+sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
 # sim.run(until=200)
 # sim.display_fluxes(trans)
 
