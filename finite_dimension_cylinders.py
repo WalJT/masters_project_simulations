@@ -11,7 +11,7 @@ import numpy as np
 import lattices
 
 # Define the materials to use, and other parameters
-block_material = mp.air
+block_material = materials.fused_quartz
 cylinder_material = mp.Medium(epsilon=3.61)
 waveguide_material = block_material
 pml_thickness = 100
@@ -19,6 +19,7 @@ lattice_constant = 15.08
 cylinder_radius = 3.7
 block_x_width = np.ceil(8*lattice_constant)
 block_y_width = np.ceil(8*lattice_constant)+600
+resolution = 5 # Resolution in pixels per micron
 
 # Current source information
 fcen = 1/40  # (Center) frequency; 1/wavelength in microns
@@ -67,9 +68,6 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
 
 # "Perfectly Matched Layers" (cell boundaries)
 pml_layers = [mp.PML(pml_thickness)]
-
-# Resolution in pixels per micron
-resolution = 2
 
 # Create meep simulation object
 sim = mp.Simulation(cell_size=cell,
