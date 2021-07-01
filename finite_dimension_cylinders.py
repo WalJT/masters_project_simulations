@@ -13,26 +13,27 @@ import lattices
 # Define the materials to use, and other parameters
 block_material = materials.fused_quartz
 cylinder_material = mp.Medium(epsilon=3.61)
-waveguide_material = block_material
+# waveguide_material = block_material
 pml_thickness = 100
 lattice_constant = 15.08
 cylinder_radius = 3.7
 block_x_width = np.ceil(8*lattice_constant)
-block_y_width = np.ceil(8*lattice_constant)+600
-resolution = 5 # Resolution in pixels per micron
+block_y_width = np.ceil(8*lattice_constant)+100
+resolution = 10  # Resolution in pixels per micron
 
 # Current source information
-fcen = 1/40  # (Center) frequency; 1/wavelength in microns
-df = 1/41    # pulse frequency width (for Gaussian Sources)
+fcen = 2.456  # (Center) frequency; 1/wavelength in microns
+df = 4.612    # pulse frequency width (for Gaussian Sources)
 source_x_loc = -(block_x_width/2 + 60)
 source_y_loc = 0
 
 # Create the block of dielectric material
 # Create a "Cell", the region in space
 cell = mp.Vector3(block_x_width+1000, block_y_width+0.5*pml_thickness, 0)
-geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
-                     center=mp.Vector3(0, 0),
-                     material=block_material)]
+# geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
+#                      center=mp.Vector3(0, 0),
+#                      material=block_material)]
+geometry = []
 
 # Append cylinders objects to the "geometry variable"
 
