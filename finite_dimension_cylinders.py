@@ -3,6 +3,7 @@ A two dimensional lattice of infinitely long
 cylindrical rods. Triangular with finite dimensions
 Adapted from https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/
 """
+import sys
 
 import meep as mp
 from meep import materials
@@ -14,26 +15,37 @@ import lattices
 block_material = materials.fused_quartz
 cylinder_material = mp.Medium(epsilon=3.61)
 # waveguide_material = block_material
-pml_thickness = 100
-lattice_constant = 15.08
-cylinder_radius = 3.7
+pml_thickness = 5
+lattice_constant = 1.508
+cylinder_radius = 0.6
 block_x_width = np.ceil(8*lattice_constant)
-block_y_width = np.ceil(8*lattice_constant)+100
-resolution = 10  # Resolution in pixels per micron
+block_y_width = 10
+resolution = 60  # Resolution in pixels per micron
+polarization = "te"  # "tm" or "te"
+
+if polarization == "te":
+    source_component = mp.Ez
+    plot_component = mp.Ez
+elif polarization == "tm":
+    source_component = mp.Ey
+    plot_component = mp.Bz
+else:
+    print("unknown or no polarisation")
+    sys.exit(1)
 
 # Current source information
 fcen = 2.456  # (Center) frequency; 1/wavelength in microns
-df = 4.612    # pulse frequency width (for Gaussian Sources)
-source_x_loc = -(block_x_width/2 + 60)
+df = 4   # pulse frequency width (for Gaussian Sources)
+source_x_loc = -(block_x_width/2 + 10)
 source_y_loc = 0
 
 # Create the block of dielectric material
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width+1000, block_y_width+0.5*pml_thickness, 0)
-# geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
-#                      center=mp.Vector3(0, 0),
-#                      material=block_material)]
-geometry = []
+cell = mp.Vector3(block_x_width+30, block_y_width+0.5*pml_thickness, 0)
+geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
+                     center=mp.Vector3(0, 0),
+                     material=block_material)]
+# geometry = []
 
 # Append cylinders objects to the "geometry variable"
 
@@ -42,15 +54,15 @@ number_of_cols = int(block_x_width / lattice_constant)
 number_of_rows = int(block_y_width / lattice_constant)
 
 # Create a square lattice
-# for point in lattices.square(lattice_constant, number_of_rows, number_of_cols, starting_corner):
-#     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
+for point in lattices.square(lattice_constant, number_of_rows, number_of_cols, starting_corner):
+    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Place a source use a gaussian source and get a transmission spectrum
 # (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
 # geometry.append(mp.Cylinder(material=mp.air, radius=300, center=mp.Vector3(0, 0)))
 sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
-                     component=mp.Ez,
-                     size=mp.Vector3(0, 40),
+                     component=source_component,
+                     size=mp.Vector3(0, 0),
                      center=mp.Vector3(source_x_loc, source_y_loc, 0))]
 
 # Add a waveguide
@@ -87,9 +99,9 @@ nfreq = 500  # number of frequencies at which to compute flux
 trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=5000)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(1, mp.output_efield_z)),  until=25)
 sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, flux_plane, 1e-3))
-# sim.run(until=200)
+# sim.run(until=50)
 # sim.display_fluxes(trans)
 
 # Get the frequencies and flux values
@@ -116,7 +128,7 @@ plt.axis('off')
 plt.show()
 
 # and then the field diagram
-ez_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Ez)
+ez_data = sim.get_array(center=mp.Vector3(), size=cell, component=plot_component)
 plt.figure()
 plt.imshow(eps_data.transpose(), interpolation='spline36', cmap='binary')
 plt.imshow(ez_data.transpose(), interpolation='spline36', cmap='RdBu', alpha=0.9)
