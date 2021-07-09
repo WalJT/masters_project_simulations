@@ -114,7 +114,7 @@ if __name__ == "__main__":
     # Important parameters to be passed to the mode solver
     num_bands = 8
     radius = 0.3  # radius of the cylinders in terms of lattice constant
-    rods_material = mp.Medium(index=3.42)
+    rods_material = mp.Medium(epsilon=3.61)
     bulk_material = materials.fused_quartz
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
     k_points = mp.interpolate(40, k_points)
