@@ -99,9 +99,9 @@ nfreq = 1000  # number of frequencies at which to compute flux
 trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_bfield_z)),  until=100)
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_bfield_z)),  until=100)
 # sim.run(until_after_sources=mp.stop_when_fields_decayed(50, plot_component, flux_plane, 1e-3))
-sim.run(until=100)
+# sim.run(until=100)
 # sim.display_fluxes(trans)
 
 # Get the frequencies and flux values
