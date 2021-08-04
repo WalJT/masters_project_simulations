@@ -15,12 +15,12 @@ import lattices
 block_material = materials.Al2O3
 cylinder_material = mp.Medium(epsilon=3.61)
 waveguide_material = block_material
-pml_thickness = 5
-lattice_constant = 1
-cylinder_radius = 0.3*lattice_constant
+pml_thickness = 2
+lattice_constant = 0.4
+cylinder_radius = 0.32*lattice_constant
 block_x_width = np.ceil(8*lattice_constant)
 block_y_width = np.ceil(25*lattice_constant)
-resolution = 40  # Resolution in pixels per micron
+resolution = 50  # Resolution in pixels per micron
 polarization = "tm"  # "tm" or "te"
 
 if polarization == "te":
@@ -34,14 +34,15 @@ else:
     sys.exit(1)
 
 # Current source information
-fcen = 2  # (Center) frequency; 1/wavelength in microns
-df = 1  # pulse frequency width (for Gaussian Sources)
+fcen = 2.6  # (Center) frequency; 1/wavelength in microns
+df = 1.9  # pulse frequency width (for Gaussian Sources)
 source_x_loc = -(block_x_width/2 + 10)
 source_y_loc = 0
+source_size = mp.Vector3(0, 5*lattice_constant)
 
 # Create the block of dielectric material
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width+50, block_y_width+pml_thickness, 0)
+cell = mp.Vector3(block_x_width+50, block_y_width+pml_thickness+lattice_constant, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
@@ -62,7 +63,7 @@ number_of_rows = int(block_y_width / lattice_constant)+6
 # geometry.append(mp.Cylinder(material=mp.air, radius=300, center=mp.Vector3(0, 0)))
 sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
                      component=source_component,
-                     size=mp.Vector3(0, 2*lattice_constant),
+                     size=source_size,
                      center=mp.Vector3(source_x_loc, source_y_loc, 0))]
 
 # Add a waveguide
@@ -91,7 +92,7 @@ sim = mp.Simulation(cell_size=cell,
 
 flux_plane = mp.Vector3(-source_x_loc, source_y_loc)
 freg = mp.FluxRegion(center=flux_plane,
-                     size=mp.Vector3(0, 40))
+                     size=source_size)
 
 nfreq = 500  # number of frequencies at which to compute flux
 
@@ -99,9 +100,9 @@ nfreq = 500  # number of frequencies at which to compute flux
 trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_bfield_z)),  until=200)
-# sim.run(until_after_sources=mp.stop_when_fields_decayed(50, plot_component, flux_plane, 1e-3))
-sim.run(until=100)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_bfield_z)),  until=100)
+sim.run(until_after_sources=mp.stop_when_fields_decayed(50, plot_component, flux_plane, 1e-3))
+# sim.run(until=100)
 # sim.display_fluxes(trans)
 
 # Get the frequencies and flux values
