@@ -15,13 +15,13 @@ import lattices
 block_material = materials.fused_quartz
 cylinder_material = mp.Medium(epsilon=3.61)
 waveguide_material = block_material
-pml_thickness = 10
 lattice_constant = 1
+pml_thickness = 3*lattice_constant
 cylinder_radius = 0.32*lattice_constant
-block_x_width = np.ceil(8*lattice_constant)
-block_y_width = np.ceil(10*lattice_constant)
+block_x_width = np.ceil(15*lattice_constant)
+block_y_width = np.ceil(20*lattice_constant)
 resolution = 40  # Resolution in pixels per micron
-polarization = "tm"  # "tm" or "te"
+polarization = "te"  # "tm" or "te"
 
 if polarization == "te":
     source_component = mp.Ez
@@ -34,15 +34,15 @@ else:
     sys.exit(1)
 
 # Current source information
-fcen = 1/2.08  # (Center) frequency; 1/wavelength in microns
-df = 1/2  # pulse frequency width (for Gaussian Sources)
-source_x_loc = -(block_x_width/2 + 10)
+fcen = 0.6  # (Center) frequency; 1/wavelength in microns
+df = 0.59  # pulse frequency width (for Gaussian Sources)
+source_x_loc = -(block_x_width/2 + 2*lattice_constant)
 source_y_loc = 0
 source_size = mp.Vector3(0, 5*lattice_constant)
 
 # Create the block of dielectric material
 # Create a "Cell", the region in space
-cell = mp.Vector3(block_x_width+50, block_y_width+1.5*pml_thickness+lattice_constant, 0)
+cell = mp.Vector3(block_x_width+50, block_y_width+pml_thickness+lattice_constant, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
@@ -52,11 +52,11 @@ geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
 
 starting_corner = mp.Vector3(-(block_x_width / 2) + cylinder_radius, -(block_y_width / 2) + cylinder_radius)
 number_of_cols = int(block_x_width / lattice_constant)
-number_of_rows = int(block_y_width / lattice_constant)+6
+number_of_rows = int(block_y_width / lattice_constant)+4
 
 # Create a square lattice
-for point in lattices.triangular(lattice_constant, number_of_rows, number_of_cols, starting_corner):
-    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
+# for point in lattices.triangular(lattice_constant, number_of_rows, number_of_cols, starting_corner):
+#     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Place a source use a gaussian source and get a transmission spectrum
 # (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
