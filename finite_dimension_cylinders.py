@@ -67,7 +67,7 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
                      center=mp.Vector3(source_x_loc, source_y_loc, 0))]
 
 # Add a waveguide
-wg1 = mp.Block(mp.Vector3(block_x_width, 0.3*lattice_constant, mp.inf),
+wg1 = mp.Block(mp.Vector3(block_x_width, lattice_constant, mp.inf),
                center=mp.Vector3(0-0.5*lattice_constant, 0),
                material=waveguide_material)
 # wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
@@ -101,7 +101,7 @@ trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
 # sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_efield_z)),  until=100)
-sim.run(until_after_sources=mp.stop_when_fields_decayed(50, plot_component, flux_plane, 1e-3))
+sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_efield_z)), until_after_sources=mp.stop_when_fields_decayed(50, plot_component, flux_plane, 1e-3))
 # sim.run(until=1)
 # sim.display_fluxes(trans)
 
