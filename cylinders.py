@@ -113,9 +113,9 @@ def output_gap_list(gaps):
 if __name__ == "__main__":
     # Important parameters to be passed to the mode solver
     num_bands = 8
-    radius = 0.35  # radius of the cylinders in terms of lattice constant
-    rods_material = mp.Medium(epsilon=3.61)
-    bulk_material = materials.fused_quartz
+    radius = 0.4  # radius of the cylinders in terms of lattice constant
+    rods_material = materials.fused_quartz
+    bulk_material = mp.Medium(epsilon=3.61)
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
     k_points = mp.interpolate(40, k_points)
     resolution = 100  # Lattice constant is this many pixels
@@ -130,8 +130,8 @@ if __name__ == "__main__":
 
     band_frequencies, band_gaps = do_calculations(ms, "tm")
     plot_bands(band_frequencies, band_gaps)
-    # band_frequencies, band_gaps = do_calculations(ms, "te")
-    # plot_bands(band_frequencies, band_gaps)
+    band_frequencies, band_gaps = do_calculations(ms, "te")
+    plot_bands(band_frequencies, band_gaps)
     display_lattice()
 
 """

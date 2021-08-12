@@ -17,7 +17,7 @@ cylinder_material = mp.Medium(epsilon=3.61)
 waveguide_material = block_material
 lattice_constant = 1
 pml_thickness = 3*lattice_constant
-cylinder_radius = 0.32*lattice_constant
+cylinder_radius = 0.4*lattice_constant
 block_x_width = np.ceil(15*lattice_constant)
 block_y_width = np.ceil(30*lattice_constant)
 resolution = 40  # Resolution in pixels per micron
@@ -34,8 +34,8 @@ else:
     sys.exit(1)
 
 # Current source information
-fcen = 1/1.6  # (Center) frequency; 1/wavelength in microns
-df = 0.3  # pulse frequency width (for Gaussian Sources)
+fcen = 0.6  # (Center) frequency; 1/wavelength in microns
+df = 0.59  # pulse frequency width (for Gaussian Sources)
 source_x_loc = -(block_x_width/2 + 2*lattice_constant)
 source_y_loc = 0
 source_size = mp.Vector3(0, 2.5*lattice_constant)
@@ -55,8 +55,8 @@ number_of_cols = int(block_x_width / lattice_constant)
 number_of_rows = int(block_y_width / lattice_constant)+6
 
 # Create a square lattice
-# for point in lattices.triangular(lattice_constant, number_of_rows, number_of_cols, starting_corner):
-#     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
+for point in lattices.triangular(lattice_constant, number_of_rows, number_of_cols, starting_corner):
+    geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
 # Place a source use a gaussian source and get a transmission spectrum
 # (https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/)
@@ -67,9 +67,9 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
                      center=mp.Vector3(source_x_loc, source_y_loc, 0))]
 
 # Add a waveguide
-wg1 = mp.Block(mp.Vector3(block_x_width, lattice_constant, mp.inf),
-               center=mp.Vector3(0-0.5*lattice_constant, 0),
-               material=waveguide_material)
+# wg1 = mp.Block(mp.Vector3(block_x_width, lattice_constant, mp.inf),
+#                center=mp.Vector3(0-0.5*lattice_constant, 0),
+#                material=waveguide_material)
 # wg1 = mp.Block(mp.Vector3(block_width/4, 1.2, mp.inf),
 #                center=mp.Vector3(block_width/8 + 1, 0),
 #                material=waveguide_material)
@@ -100,7 +100,7 @@ nfreq = 500  # number of frequencies at which to compute flux
 trans = sim.add_flux(fcen, df, nfreq, freg)
 
 # Run the simulation
-# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_efield_z)),  until=100)
+# sim.run(mp.at_beginning(mp.output_epsilon), mp.to_appended("ez", mp.at_every(0.1, mp.output_bfield_z)),  until=100)
 sim.run(until_after_sources=mp.stop_when_fields_decayed(50, plot_component, flux_plane, 1e-3))
 # sim.run(until=1)
 # sim.display_fluxes(trans)
