@@ -5,7 +5,7 @@ import numpy as np
 
 def triangular(lattice_constant: float, number_of_rows: int, number_of_cols: int, starting_point: mp.Vector3) -> list:
     """
-    Returns a triangular (hexagonal lattice) repeated over a finite region in space
+    Returns the points of a triangular (hexagonal lattice) repeated over a finite region in space
     :param lattice_constant:
     :param number_of_rows:
     :param number_of_cols:
@@ -36,7 +36,7 @@ def triangular(lattice_constant: float, number_of_rows: int, number_of_cols: int
 
 def square(lattice_constant: float, number_of_rows: int, number_of_cols: int, starting_point: mp.Vector3) -> list:
     """
-
+    Returns points in a square lattice repeated over a finite region in space
     :param lattice_constant:
     :param number_of_rows:
     :param number_of_cols:

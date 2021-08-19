@@ -12,4 +12,3 @@ The following installation command was recommended at the time this repo was cre
 ```bash
 conda create -n mp -c conda-forge pymeep
 ```
-
