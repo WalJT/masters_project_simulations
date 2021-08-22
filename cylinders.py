@@ -40,7 +40,7 @@ def display_lattice():
     plt.show()
 
 
-def plot_bands(bands, gaps):
+def plot_bands(bands, gaps, polarization):
     fig, ax = plt.subplots()  # We need ax in order to modify the tick labels
 
     x = range(len(bands))
@@ -66,6 +66,8 @@ def plot_bands(bands, gaps):
         if gap[0] > 1:
             ax.fill_between(x, gap[1], gap[2], color="blue", alpha=0.1)
 
+    plt.ylabel("Frequency (c/a)")
+    plt.title("Copper Chloride in Glass ("+polarization.upper()+")")
     plt.show()
 
 
@@ -115,9 +117,9 @@ if __name__ == "__main__":
     num_bands = 8
     radius = 0.35  # radius of the cylinders in terms of lattice constant
     rods_material = mp.Medium(epsilon=3.61)
-    bulk_material = materials.Al2O3
+    bulk_material = materials.fused_quartz
     geometry_lattice, geometry, k_points = set_up_crystal(radius, rods_material)
-    k_points = mp.interpolate(40, k_points)
+    k_points = mp.interpolate(10, k_points)
     resolution = 100  # Lattice constant is this many pixels
 
     # Create the ModeSolver
@@ -129,9 +131,9 @@ if __name__ == "__main__":
                         resolution=resolution)
 
     band_frequencies, band_gaps = do_calculations(ms, "tm")
-    plot_bands(band_frequencies, band_gaps)
+    plot_bands(band_frequencies, band_gaps, "tm")
     band_frequencies, band_gaps = do_calculations(ms, "te")
-    plot_bands(band_frequencies, band_gaps)
+    plot_bands(band_frequencies, band_gaps, "te")
     display_lattice()
 
 """

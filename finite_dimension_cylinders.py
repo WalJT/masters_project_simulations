@@ -12,16 +12,18 @@ import numpy as np
 import lattices
 
 # Define the materials to use, and other parameters
-block_material = materials.Al2O3
+block_material = materials.Si
 cylinder_material = mp.Medium(epsilon=3.61)
 waveguide_material = block_material
 lattice_constant = 1
-pml_thickness = 3*lattice_constant
+pml_thickness = 3*lattice_constant  # Absorbing layer thickness.
+# For best results shoud be greater than the longest wavelenght
+
 cylinder_radius = 0.35*lattice_constant
 block_x_width = np.ceil(15*lattice_constant)
 block_y_width = np.ceil(30*lattice_constant)
-resolution = 40  # Resolution in pixels per micron
-polarization = "tm"  # "tm" or "te"
+resolution = 25  # Resolution in pixels per micron
+polarization = "tm"  # "tm" for transverse magnetic or "te" for transverse electric
 
 if polarization == "te":
     source_component = mp.Ez
@@ -34,27 +36,27 @@ else:
     sys.exit(1)
 
 # Current source information
-fcen = 1.49  # (Center) frequency; 1/wavelength in microns
-df = 2  # pulse frequency width (for Gaussian Sources)
+fcen = 0.35  # (Center) frequency; 1/wavelength in microns
+df = 0.2  # pulse frequency width (for Gaussian Sources)
 source_x_loc = -(block_x_width/2 + 2*lattice_constant)
-source_y_loc = 0
-source_size = mp.Vector3(0, 2.5*lattice_constant)
+source_y_loc = 0  # X and Y coordinates of the source
+source_size = mp.Vector3(0, 2.5*lattice_constant)  # Source dimensions...
+# also used for the flux measuring region
 
 # Create the block of dielectric material
-# Create a "Cell", the region in space
+# Create a "Cell", the region in space which contains the simulation
 cell = mp.Vector3(block_x_width+50, block_y_width+pml_thickness+lattice_constant, 0)
 geometry = [mp.Block(mp.Vector3(block_x_width, block_y_width, mp.inf),
                      center=mp.Vector3(0, 0),
                      material=block_material)]
 # geometry = []
 
-# Append cylinders objects to the "geometry variable"
-
+# Append cylinders objects to the "geometry"variable
 starting_corner = mp.Vector3(-(block_x_width / 2) + cylinder_radius, -(block_y_width / 2) + cylinder_radius)
 number_of_cols = int(block_x_width / lattice_constant)
 number_of_rows = int(block_y_width / lattice_constant)+6
 
-# Create a square lattice
+# Create a lattice. Defined in lattices.py
 for point in lattices.triangular(lattice_constant, number_of_rows, number_of_cols, starting_corner):
     geometry.append(mp.Cylinder(radius=cylinder_radius, material=cylinder_material, center=point))
 
@@ -80,7 +82,7 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df),
 # geometry.append(wg1)
 # geometry.append(wg2)
 
-# "Perfectly Matched Layers" (cell boundaries)
+# "Perfectly Matched Layers" (absorbing layer at the cell boundaries)
 pml_layers = [mp.PML(pml_thickness)]
 
 # Create meep simulation object
@@ -121,7 +123,7 @@ with open("out.txt", "w") as file:
 
 
 # plot data using matplotlib
-# First the dielectric
+# First the dielectric structure
 eps_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Dielectric)
 plt.figure()
 plt.imshow(eps_data.transpose(), interpolation='spline36', cmap='binary')
